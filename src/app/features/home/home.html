@@ -1,0 +1,291 @@
+<div class="landing">
+
+  <!-- HERO -->
+  <section id="home" class="section section--hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Powered by SignalR WebSockets</p>
+        <h1>
+          Real-Time Bookings,<br />
+          <span class="text-emerald">Synchronized Intelligently</span>
+        </h1>
+        <p class="hero-subtitle">
+          SyncBook pushes every reservation instantly across your ecosystem — customers book in
+          seconds, business owners see updates live without refreshing a single page.
+        </p>
+        <div class="hero-actions">
+          <a routerLink="/register" class="btn btn--primary">Get Started</a>
+          <a href="#booking" class="btn btn--outline">Watch Demo</a>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="sync-graphic">
+          <div class="sync-node sync-node--customer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <div class="sync-text">
+              <span class="sync-label">Customer</span>
+              <span class="sync-action">Creates Booking</span>
+            </div>
+          </div>
+          <div class="sync-line sync-line--left">
+            <div class="sync-pulse"></div>
+          </div>
+          <div class="sync-hub">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
+            <div class="sync-text">
+              <span class="sync-label">SignalR Hub</span>
+              <span class="sync-action">Broadcasts Event</span>
+            </div>
+          </div>
+          <div class="sync-line sync-line--right">
+            <div class="sync-pulse sync-pulse--delay"></div>
+          </div>
+          <div class="sync-node sync-node--owner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <path d="M8 21h8M12 17v4" />
+            </svg>
+            <div class="sync-text">
+              <span class="sync-label">Owner Dashboard</span>
+              <span class="sync-action">Receives Live Notification</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="section section--features">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">Engineering pillars</p>
+        <h2>Built for real-time performance</h2>
+        <p class="section-desc">
+          Every layer of SyncBook is engineered for instant feedback, secure isolation, and
+          algorithmic precision.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <article class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
+          </div>
+          <h3>Instant Sync</h3>
+          <p>
+            SignalR WebSockets push booking events the moment they happen — zero polling, zero
+            delay.
+          </p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <path d="M16 2v4M8 2v4M3 10h18" />
+              <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" />
+            </svg>
+          </div>
+          <h3>Dynamic Slot Allocation</h3>
+          <p>
+            NoSQL-powered availability engine calculates open slots in real time as bookings
+            flow in.
+          </p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+          </div>
+          <h3>Tenant Isolation</h3>
+          <p>
+            Role-based secure namespaces keep every business data siloed and access-controlled.
+          </p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <path d="M8 21h8M12 17v4" />
+              <circle cx="18" cy="8" r="3" fill="currentColor" stroke="none" />
+            </svg>
+          </div>
+          <h3>Live Dashboard</h3>
+          <p>
+            Business owners monitor incoming reservations on a live dashboard that updates
+            without page refresh.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="price" class="section section--price">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">Simple pricing</p>
+        <h2>Choose your plan</h2>
+        <p class="section-desc">
+          Start free, scale as you grow. Every tier includes real-time sync out of the box.
+        </p>
+      </div>
+
+      <div class="pricing-grid">
+        <article class="pricing-card">
+          <h3>Starter</h3>
+          <p class="pricing-tagline">For solo practitioners</p>
+          <div class="pricing-amount">
+            <span class="price">$19</span>
+            <span class="period">/mo</span>
+          </div>
+          <ul class="pricing-features">
+            <li>Up to 50 bookings / month</li>
+            <li>1 business profile</li>
+            <li>Real-time slot sync</li>
+            <li>Email notifications</li>
+          </ul>
+          <a routerLink="/register" class="btn btn--outline btn--block">Get Started</a>
+        </article>
+
+        <article class="pricing-card pricing-card--featured">
+          <span class="pricing-badge">Most Popular</span>
+          <h3>Professional</h3>
+          <p class="pricing-tagline">For growing teams</p>
+          <div class="pricing-amount">
+            <span class="price">$49</span>
+            <span class="period">/mo</span>
+          </div>
+          <ul class="pricing-features">
+            <li>Unlimited bookings</li>
+            <li>Up to 5 staff members</li>
+            <li>Live owner dashboard</li>
+            <li>Priority SignalR channels</li>
+            <li>Custom business hours</li>
+          </ul>
+          <a routerLink="/register" class="btn btn--primary btn--block">Get Started</a>
+        </article>
+
+        <article class="pricing-card">
+          <h3>Enterprise</h3>
+          <p class="pricing-tagline">For multi-location brands</p>
+          <div class="pricing-amount">
+            <span class="price">Custom</span>
+          </div>
+          <ul class="pricing-features">
+            <li>Multi-tenant namespaces</li>
+            <li>Dedicated SignalR hub</li>
+            <li>SSO &amp; advanced RBAC</li>
+            <li>SLA &amp; priority support</li>
+            <li>Custom integrations</li>
+          </ul>
+          <a routerLink="/register" class="btn btn--outline btn--block">Contact Sales</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKING DEEP DIVE -->
+  <section id="booking" class="section section--booking">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">The real-time pipeline</p>
+        <h2>See sync in action</h2>
+        <p class="section-desc">
+          From customer click to owner notification — the entire flow happens in milliseconds.
+        </p>
+      </div>
+
+      <div class="pipeline-timeline">
+        <div class="pipeline-step">
+          <span class="pipeline-num">1</span>
+          <span class="pipeline-label">Customer books</span>
+        </div>
+        <div class="pipeline-arrow" aria-hidden="true">→</div>
+        <div class="pipeline-step">
+          <span class="pipeline-num">2</span>
+          <span class="pipeline-label">SignalR hub broadcasts</span>
+        </div>
+        <div class="pipeline-arrow" aria-hidden="true">→</div>
+        <div class="pipeline-step">
+          <span class="pipeline-num">3</span>
+          <span class="pipeline-label">Owner dashboard updates</span>
+        </div>
+      </div>
+
+      <div class="booking-showcase">
+        <div class="mock-panel mock-panel--customer">
+          <div class="mock-header">
+            <span class="mock-dot mock-dot--red"></span>
+            <span class="mock-dot mock-dot--yellow"></span>
+            <span class="mock-dot mock-dot--green"></span>
+            <span class="mock-title">Book an appointment</span>
+          </div>
+          <div class="mock-body">
+            <p class="mock-label">Select service</p>
+            <div class="mock-select mock-select--active">Haircut &amp; Styling</div>
+            <p class="mock-label">Available slots — Today</p>
+            <div class="mock-slots">
+              <span class="mock-slot">9:00</span>
+              <span class="mock-slot mock-slot--active">10:30</span>
+              <span class="mock-slot">11:00</span>
+              <span class="mock-slot">14:00</span>
+            </div>
+            <button type="button" class="mock-btn">Confirm Booking</button>
+          </div>
+        </div>
+
+        <div class="sync-bridge" aria-hidden="true">
+          <div class="sync-bridge-line">
+            <div class="sync-bridge-pulse"></div>
+          </div>
+          <span class="sync-bridge-label">WebSocket</span>
+        </div>
+
+        <div class="mock-panel mock-panel--owner">
+          <div class="mock-header">
+            <span class="mock-dot mock-dot--red"></span>
+            <span class="mock-dot mock-dot--yellow"></span>
+            <span class="mock-dot mock-dot--green"></span>
+            <span class="mock-title">Live Dashboard</span>
+            <span class="live-badge">
+              <span class="live-dot"></span>
+              LIVE
+            </span>
+          </div>
+          <div class="mock-body">
+            <p class="mock-label">Today's bookings</p>
+            <div class="mock-booking-row mock-booking-row--static">
+              <span class="mock-time">9:00 AM</span>
+              <span class="mock-service">Consultation</span>
+              <span class="mock-status mock-status--confirmed">Confirmed</span>
+            </div>
+            <div class="mock-booking-row mock-booking-row--live">
+              <span class="mock-time">10:30 AM</span>
+              <span class="mock-service">Haircut &amp; Styling</span>
+              <span class="mock-status mock-status--new">Just booked</span>
+            </div>
+            <div class="mock-booking-row mock-booking-row--static">
+              <span class="mock-time">2:00 PM</span>
+              <span class="mock-service">Color Treatment</span>
+              <span class="mock-status mock-status--confirmed">Confirmed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

@@ -1,0 +1,90 @@
+<section class="booking-page">
+  <div class="booking-hero">
+    <div class="container">
+      <p class="eyebrow">Public booking</p>
+      <h1>Book a Service</h1>
+      <p class="hero-subtitle">
+        Browse businesses registered on SyncBook, explore their services and working hours, and
+        reserve your next appointment — real-time slot booking coming soon.
+      </p>
+    </div>
+  </div>
+
+  <div class="booking-content">
+    <div class="container">
+      @if (loading()) {
+        <div class="state-message">
+          <div class="spinner" aria-hidden="true"></div>
+          <p>Loading businesses…</p>
+        </div>
+      } @else if (error()) {
+        <div class="state-message state-message--error">
+          <p>{{ error() }}</p>
+          <button type="button" class="btn btn--outline" (click)="retry()">Try again</button>
+        </div>
+      } @else if (businesses().length === 0) {
+        <div class="state-message state-message--empty">
+          <h2>No businesses available yet</h2>
+          <p>Be the first to list your business on SyncBook and start accepting bookings.</p>
+          <a routerLink="/register" class="btn btn--primary">Register as Business Owner</a>
+        </div>
+      } @else {
+        <div class="business-grid">
+          @for (business of businesses(); track business.id) {
+            <article class="business-card">
+              <div class="business-card__media">
+                @if (business.image) {
+                  <img [src]="business.image" [alt]="business.name" class="business-card__image" />
+                } @else {
+                  <div class="business-card__placeholder">
+                    <span>{{ business.category?.charAt(0) ?? business.name.charAt(0) }}</span>
+                  </div>
+                }
+              </div>
+
+              <div class="business-card__body">
+                <div class="business-card__header">
+                  <h2>{{ business.name }}</h2>
+                  @if (business.category) {
+                    <span class="business-card__category">{{ business.category }}</span>
+                  }
+                </div>
+
+                @if (business.description) {
+                  <p class="business-card__desc">{{ business.description }}</p>
+                }
+
+                @if (business.services.length > 0) {
+                  <div class="business-card__section">
+                    <h3>Services</h3>
+                    <ul class="service-list">
+                      @for (service of business.services; track service.name) {
+                        <li>
+                          <span class="service-name">{{ service.name }}</span>
+                          @if (service.durationMinutes) {
+                            <span class="service-duration">{{ formatDuration(service.durationMinutes) }}</span>
+                          }
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
+
+                @if (business.workingHours.length > 0) {
+                  <div class="business-card__section">
+                    <h3>Working hours</h3>
+                    <p class="hours-summary">{{ formatWorkingHoursSummary(business) }}</p>
+                  </div>
+                }
+
+                <button type="button" class="btn btn--disabled btn--block" disabled>
+                  Book — Coming soon
+                </button>
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</section>

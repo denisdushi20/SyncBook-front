@@ -1,0 +1,125 @@
+<div class="onboarding-overlay">
+  <div class="onboarding-modal">
+    <h1>Business Onboarding</h1>
+    <p class="subtitle">Set up your business profile to complete registration</p>
+
+    @if (errorMessage()) {
+      <p class="error">{{ errorMessage() }}</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <section class="form-section">
+        <h2>Business Identity</h2>
+
+        <div class="field">
+          <label for="image">Business Image</label>
+          <div class="image-upload">
+            @if (imagePreview()) {
+              <img [src]="imagePreview()" alt="Business preview" class="image-preview" />
+            } @else {
+              <div class="image-placeholder">No image selected</div>
+            }
+            <input id="image" type="file" accept="image/*" (change)="onImageSelected($event)" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="name">Business Name</label>
+          <input id="name" type="text" formControlName="name" placeholder="Your Business Name" />
+          @if (form.controls.name.touched && form.controls.name.errors?.['required']) {
+            <span class="field-error">Business name is required.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="businessEmail">Business Email</label>
+          <input id="businessEmail" type="email" formControlName="email" placeholder="contact@yourbusiness.com" />
+          @if (form.controls.email.touched && form.controls.email.errors?.['required']) {
+            <span class="field-error">Business email is required.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone Number</label>
+          <input id="phone" type="tel" formControlName="phone" placeholder="+1 555 000 0000" />
+        </div>
+
+        <div class="field">
+          <label for="category">Business Category</label>
+          <select id="category" formControlName="category">
+            <option value="" disabled>Select a category</option>
+            <option value="Salon">Salon &amp; Beauty</option>
+            <option value="Fitness">Fitness &amp; Wellness</option>
+            <option value="Medical">Medical &amp; Healthcare</option>
+            <option value="Restaurant">Restaurant &amp; Dining</option>
+            <option value="Professional">Professional Services</option>
+            <option value="Other">Other</option>
+          </select>
+          @if (form.controls.category.touched && form.controls.category.errors?.['required']) {
+            <span class="field-error">Category is required.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="description">Description</label>
+          <textarea id="description" formControlName="description" rows="2" placeholder="Tell customers about your business…"></textarea>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="section-header">
+          <h2>Services</h2>
+          <button type="button" class="add-btn" (click)="addService()">+ Add Service</button>
+        </div>
+
+        <div formArrayName="services">
+          @for (service of services.controls; track $index) {
+            <div class="service-row" [formGroupName]="$index">
+              <div class="field">
+                <label>Service Name</label>
+                <input type="text" formControlName="name" placeholder="e.g. Haircut" />
+                @if (service.get('name')?.touched && service.get('name')?.errors?.['required']) {
+                  <span class="field-error">Service name is required.</span>
+                }
+              </div>
+              <div class="field field--short">
+                <label>Duration (min)</label>
+                <input type="number" formControlName="durationMinutes" placeholder="30" min="1" />
+              </div>
+              @if (services.length > 1) {
+                <button type="button" class="remove-btn" (click)="removeService($index)">Remove</button>
+              }
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Working Hours</h2>
+
+        <div formArrayName="workingHours">
+          @for (day of workingHours.controls; track $index) {
+            <div class="hours-row" [formGroupName]="$index">
+              <span class="day-label">{{ day.get('day')?.value }}</span>
+              <label class="open-toggle">
+                <input type="checkbox" formControlName="isOpen" (change)="onDayOpenChange($index)" />
+                Open
+              </label>
+              @if (day.get('isOpen')?.value) {
+                <input type="time" formControlName="openTime" class="time-input" />
+                <span class="time-sep">to</span>
+                <input type="time" formControlName="closeTime" class="time-input" />
+              } @else {
+                <span class="closed-label">Closed</span>
+              }
+            </div>
+          }
+        </div>
+      </section>
+
+      <button type="submit" class="submit-btn" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Completing registration…' : 'Complete Registration' }}
+      </button>
+    </form>
+  </div>
+</div>

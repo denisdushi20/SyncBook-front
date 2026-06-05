@@ -1,0 +1,123 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 64px;
+  padding: 0.5rem 2rem;
+  background: #1e293b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.brand {
+  position: absolute;
+  left: 2.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #10b981;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+}
+
+.nav-link {
+  color: #e2e8f0;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    color: #10b981;
+  }
+
+  &--active {
+    color: #10b981;
+    border-bottom: 2px solid #10b981;
+    padding-bottom: 0.15rem;
+  }
+
+  &--accent {
+    color: #10b981;
+    border: 1px solid #10b981;
+    padding: 0.35rem 0.9rem;
+    border-radius: 6px;
+
+    &:hover {
+      background: #10b981;
+      color: #1e293b;
+    }
+  }
+}
+
+.user-greeting {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.nav-btn {
+  background: transparent;
+  border: 1px solid #475569;
+  color: #e2e8f0;
+  padding: 0.35rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    border-color: #10b981;
+    color: #10b981;
+  }
+}
+
+@media (max-width: 900px) {
+  .navbar {
+    justify-content: flex-start;
+    padding-left: 9rem;
+    padding-right: 1rem;
+  }
+
+  .brand {
+    left: 1.5rem;
+  }
+
+  .nav-links {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .navbar {
+    padding-left: 1rem;
+    padding-top: 3.25rem;
+    align-items: flex-start;
+  }
+
+  .brand {
+    left: 1.25rem;
+    top: 0.85rem;
+    transform: none;
+  }
+
+  .nav-links {
+    width: 100%;
+    gap: 0.5rem 0.75rem;
+  }
+}

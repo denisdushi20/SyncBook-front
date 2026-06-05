@@ -1,0 +1,43 @@
+<div class="auth-page">
+<div class="auth-card">
+  <h1>Sign In</h1>
+  <p class="subtitle">Welcome back to SyncBook</p>
+
+  @if (successMessage()) {
+    <p class="success">{{ successMessage() }}</p>
+  }
+
+  @if (errorMessage()) {
+    <p class="error">{{ errorMessage() }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" placeholder="you@example.com" />
+      @if (form.controls.email.touched && form.controls.email.errors?.['required']) {
+        <span class="field-error">Email is required.</span>
+      }
+      @if (form.controls.email.touched && form.controls.email.errors?.['email']) {
+        <span class="field-error">Enter a valid email.</span>
+      }
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" type="password" formControlName="password" placeholder="••••••" />
+      @if (form.controls.password.touched && form.controls.password.errors?.['required']) {
+        <span class="field-error">Password is required.</span>
+      }
+    </div>
+
+    <button type="submit" class="submit-btn" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'Signing in…' : 'Sign In' }}
+    </button>
+  </form>
+
+  <p class="footer-link">
+    Don't have an account? <a routerLink="/register">Register</a>
+  </p>
+</div>
+</div>

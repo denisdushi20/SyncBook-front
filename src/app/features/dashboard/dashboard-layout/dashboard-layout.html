@@ -1,0 +1,27 @@
+<div class="dashboard-shell">
+  <aside class="sidebar">
+    <a routerLink="/" class="sidebar-brand">SyncBook</a>
+
+    <nav class="sidebar-nav">
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="sidebar-link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="sidebar-link"
+      >
+        Dashboard
+      </a>
+    </nav>
+
+    @if (authService.currentUser$ | async; as user) {
+      <div class="sidebar-footer">
+        <span class="user-greeting">{{ user.fullName }}</span>
+        <button type="button" class="logout-btn" (click)="authService.logout()">Logout</button>
+      </div>
+    }
+  </aside>
+
+  <main class="dashboard-main">
+    <router-outlet />
+  </main>
+</div>

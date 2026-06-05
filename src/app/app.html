@@ -1,9 +1,14 @@
-<main class="app">
-  <header>
-    <h1>{{ title() }}</h1>
-    <p>Angular frontend connected to ASP.NET Core API</p>
-  </header>
+@if (!hideChrome()) {
+  <app-header />
+}
 
+<main class="content" [class.content--fullbleed]="isFullBleedPage()">
+  <router-outlet />
+</main>
+
+@if (!isFullBleedPage()) {
+<section class="dev-strip">
+  <h2>API Connection</h2>
   @switch (apiStatus()) {
     @case ('loading') {
       <p class="status">Connecting to API…</p>
@@ -16,8 +21,8 @@
     }
     @case ('connected') {
       <p class="status success">API connected</p>
-      <section>
-        <h2>Sample forecast from <code>/api/weatherforecast</code></h2>
+      <details>
+        <summary>Sample forecast from <code>/api/weatherforecast</code></summary>
         <ul>
           @for (forecast of forecasts(); track forecast.date) {
             <li>
@@ -26,9 +31,8 @@
             </li>
           }
         </ul>
-      </section>
+      </details>
     }
   }
-
-  <router-outlet />
-</main>
+</section>
+}

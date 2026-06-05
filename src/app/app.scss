@@ -1,35 +1,42 @@
 :host {
   display: block;
   min-height: 100vh;
-  font-family: system-ui, sans-serif;
-  color: #1a1a1a;
-  background: #f5f7fb;
 }
 
-.app {
+.content {
+  padding-top: 64px;
+  min-height: calc(100vh - 64px);
+
+  &--fullbleed {
+    padding-top: 0;
+    min-height: auto;
+  }
+}
+.dev-strip {
   max-width: 720px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
-}
+  padding: 2rem 1.5rem 3rem;
+  border-top: 1px solid #e2e8f0;
 
-header h1 {
-  margin: 0 0 0.25rem;
-}
-
-header p {
-  margin: 0 0 1.5rem;
-  color: #555;
+  h2 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+    margin: 0 0 0.75rem;
+  }
 }
 
 .status {
   padding: 0.75rem 1rem;
   border-radius: 8px;
   background: #eef2ff;
+  font-size: 0.9rem;
 }
 
 .status.success {
-  background: #e8f5e9;
-  color: #1b5e20;
+  background: #ecfdf5;
+  color: #065f46;
 }
 
 .status.error {
@@ -37,12 +44,20 @@ header p {
   color: #b71c1c;
 }
 
-section {
-  margin-top: 1.5rem;
-}
+details {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: #64748b;
 
-ul {
-  padding-left: 1.25rem;
+  summary {
+    cursor: pointer;
+    color: #475569;
+  }
+
+  ul {
+    padding-left: 1.25rem;
+    margin-top: 0.5rem;
+  }
 }
 
 code {

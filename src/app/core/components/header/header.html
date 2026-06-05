@@ -1,0 +1,24 @@
+<header class="navbar">
+  <a routerLink="/" class="brand">SyncBook</a>
+
+  <nav class="nav-links">
+    <a routerLink="/booking" class="nav-link" routerLinkActive="nav-link--active" [routerLinkActiveOptions]="{ exact: true }">Booking</a>
+    <a routerLink="/" fragment="features" class="nav-link">Features</a>
+    <a routerLink="/" fragment="price" class="nav-link">Pricing</a>
+    <a routerLink="/" fragment="booking" class="nav-link">Live Demo</a>
+
+    @if (authService.currentUser$ | async; as user) {
+      @if (user.role === 'Customer') {
+        <a routerLink="/bookings" class="nav-link">My Bookings</a>
+      }
+      @if (user.role === 'BusinessOwner') {
+        <a routerLink="/dashboard" class="nav-link">Live Dashboard</a>
+      }
+      <span class="user-greeting">{{ user.fullName }}</span>
+      <button type="button" class="nav-btn" (click)="authService.logout()">Logout</button>
+    } @else {
+      <a routerLink="/login" class="nav-link">Login</a>
+      <a routerLink="/register" class="nav-link nav-link--accent">Register</a>
+    }
+  </nav>
+</header>

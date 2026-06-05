@@ -1,0 +1,61 @@
+<div class="auth-page">
+<div class="auth-card auth-card--wide">
+  <h1>Create Business Account</h1>
+  <p class="subtitle">Register as a business owner to get started</p>
+
+  @if (errorMessage()) {
+    <p class="error">{{ errorMessage() }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="field-row">
+      <div class="field">
+        <label for="firstName">First Name</label>
+        <input id="firstName" type="text" formControlName="firstName" placeholder="John" />
+        @if (form.controls.firstName.touched && form.controls.firstName.errors?.['required']) {
+          <span class="field-error">First name is required.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="lastName">Last Name</label>
+        <input id="lastName" type="text" formControlName="lastName" placeholder="Smith" />
+        @if (form.controls.lastName.touched && form.controls.lastName.errors?.['required']) {
+          <span class="field-error">Last name is required.</span>
+        }
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" placeholder="you@example.com" />
+      @if (form.controls.email.touched && form.controls.email.errors?.['required']) {
+        <span class="field-error">Email is required.</span>
+      }
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" type="password" formControlName="password" placeholder="••••••" />
+      @if (form.controls.password.touched && form.controls.password.errors?.['required']) {
+        <span class="field-error">Password is required.</span>
+      }
+      @if (form.controls.password.touched && form.controls.password.errors?.['minlength']) {
+        <span class="field-error">Password must be at least 6 characters.</span>
+      }
+    </div>
+
+    <p class="owner-hint">
+      Next you'll set up your business profile — services, hours, and more.
+    </p>
+
+    <button type="submit" class="submit-btn" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'Continuing…' : 'Continue to Business Onboarding' }}
+    </button>
+  </form>
+
+  <p class="footer-link">
+    Already have an account? <a routerLink="/login">Sign In</a>
+  </p>
+</div>
+</div>
