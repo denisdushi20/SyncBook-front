@@ -1,0 +1,34 @@
+<main class="app">
+  <header>
+    <h1>{{ title() }}</h1>
+    <p>Angular frontend connected to ASP.NET Core API</p>
+  </header>
+
+  @switch (apiStatus()) {
+    @case ('loading') {
+      <p class="status">Connecting to API…</p>
+    }
+    @case ('error') {
+      <p class="status error">
+        Could not reach the API. Start the backend with
+        <code>dotnet run</code> in SyncBook-server.
+      </p>
+    }
+    @case ('connected') {
+      <p class="status success">API connected</p>
+      <section>
+        <h2>Sample forecast from <code>/api/weatherforecast</code></h2>
+        <ul>
+          @for (forecast of forecasts(); track forecast.date) {
+            <li>
+              {{ forecast.date }} — {{ forecast.temperatureC }}°C /
+              {{ forecast.summary }}
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  }
+
+  <router-outlet />
+</main>
