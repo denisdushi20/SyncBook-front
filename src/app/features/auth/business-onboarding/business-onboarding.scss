@@ -15,6 +15,8 @@
 .onboarding-modal {
   width: 100%;
   max-width: 600px;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
   background: #fff;
   border-radius: 16px;
   padding: 2.5rem;
@@ -233,5 +235,42 @@
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+}
+
+@media (max-width: 640px) {
+  .onboarding-overlay {
+    padding: 1rem 0.75rem;
+    align-items: flex-start;
+  }
+
+  .onboarding-modal {
+    padding: 1.25rem;
+    max-height: calc(100vh - 1.5rem);
+    border-radius: 12px;
+  }
+
+  .service-row {
+    grid-template-columns: 1fr;
+  }
+
+  .remove-btn {
+    padding-top: 0;
+    justify-self: start;
+  }
+
+  .hours-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .day-label {
+    width: auto;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 }

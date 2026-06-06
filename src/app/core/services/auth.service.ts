@@ -2,8 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BusinessServiceItem, DaySchedule } from '../models/business.models';
 
 export type UserRole = 'Customer' | 'BusinessOwner';
+export type AuthProvider = 'Local' | 'Google';
 
 export interface AuthUser {
   id: string;
@@ -13,16 +15,8 @@ export interface AuthUser {
   businessId?: string;
 }
 
-export interface BusinessService {
-  name: string;
-  durationMinutes?: number;
-}
-
-export interface DaySchedule {
-  day: string;
-  isOpen: boolean;
-  openTime?: string;
-  closeTime?: string;
+export interface UserProfile extends AuthUser {
+  authProvider: AuthProvider;
 }
 
 export interface BusinessOnboardingData {
@@ -32,7 +26,7 @@ export interface BusinessOnboardingData {
   category?: string;
   description?: string;
   image?: string;
-  services: BusinessService[];
+  services: BusinessServiceItem[];
   workingHours: DaySchedule[];
 }
 
@@ -69,8 +63,13 @@ interface EmailAvailabilityResponse {
   available: boolean;
 }
 
+interface MessageResponse {
+  message: string;
+}
+
 const TOKEN_KEY = 'syncbook_token';
 const PENDING_REGISTRATION_KEY = 'syncbook_pending_registration';
+const VERIFIED_EMAIL_KEY = 'syncbook_verified_email';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -93,6 +92,7 @@ export class AuthService {
   }
 
   setPendingRegistration(data: PendingRegistration): void {
+    sessionStorage.removeItem(VERIFIED_EMAIL_KEY);
     sessionStorage.setItem(PENDING_REGISTRATION_KEY, JSON.stringify(data));
   }
 
@@ -108,6 +108,30 @@ export class AuthService {
 
   clearPendingRegistration(): void {
     sessionStorage.removeItem(PENDING_REGISTRATION_KEY);
+    sessionStorage.removeItem(VERIFIED_EMAIL_KEY);
+  }
+
+  setVerifiedEmail(email: string): void {
+    sessionStorage.setItem(VERIFIED_EMAIL_KEY, email.trim().toLowerCase());
+  }
+
+  getVerifiedEmail(): string | null {
+    return sessionStorage.getItem(VERIFIED_EMAIL_KEY);
+  }
+
+  isEmailVerifiedForPendingRegistration(): boolean {
+    const pending = this.getPendingRegistration();
+    const verified = this.getVerifiedEmail();
+    if (!pending || !verified) return false;
+    return pending.email.trim().toLowerCase() === verified;
+  }
+
+  sendRegistrationCode(email: string): Observable<MessageResponse> {
+    return this.http.post<MessageResponse>('/api/auth/send-registration-code', { email });
+  }
+
+  verifyRegistrationCode(email: string, code: string): Observable<MessageResponse> {
+    return this.http.post<MessageResponse>('/api/auth/verify-registration-code', { email, code });
   }
 
   checkEmailAvailable(email: string): Observable<EmailAvailabilityResponse> {
@@ -128,12 +152,30 @@ export class AuthService {
 
   login(request: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>('/api/auth/login', request).pipe(
-      tap((response) => {
-        this.clearPendingRegistration();
-        localStorage.setItem(TOKEN_KEY, response.token);
-        this.currentUserSubject.next(response.user);
-      })
+      tap((response) => this.persistSession(response))
     );
+  }
+
+  loginWithGoogle(idToken: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>('/api/auth/google', { idToken }).pipe(
+      tap((response) => this.persistSession(response))
+    );
+  }
+
+  getCurrentUser(): Observable<UserProfile> {
+    return this.http.get<UserProfile>('/api/auth/me');
+  }
+
+  changePassword(currentPassword: string, newPassword: string): Observable<void> {
+    return this.http.put<void>('/api/auth/password', { currentPassword, newPassword });
+  }
+
+  forgotPassword(email: string): Observable<MessageResponse> {
+    return this.http.post<MessageResponse>('/api/auth/forgot-password', { email });
+  }
+
+  resetPassword(email: string, code: string, newPassword: string): Observable<MessageResponse> {
+    return this.http.post<MessageResponse>('/api/auth/reset-password', { email, code, newPassword });
   }
 
   logout(): void {
@@ -178,5 +220,11 @@ export class AuthService {
     } catch {
       return null;
     }
+  }
+
+  private persistSession(response: AuthResponse): void {
+    this.clearPendingRegistration();
+    localStorage.setItem(TOKEN_KEY, response.token);
+    this.currentUserSubject.next(response.user);
   }
 }

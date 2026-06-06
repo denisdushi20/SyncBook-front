@@ -11,11 +11,32 @@
       >
         Dashboard
       </a>
+      <a
+        routerLink="/dashboard/calendar"
+        routerLinkActive="sidebar-link--active"
+        class="sidebar-link"
+      >
+        Calendar
+      </a>
+      <a
+        routerLink="/dashboard/profile"
+        routerLinkActive="sidebar-link--active"
+        class="sidebar-link"
+      >
+        Business Profile
+      </a>
+      <a
+        routerLink="/dashboard/settings"
+        routerLinkActive="sidebar-link--active"
+        class="sidebar-link"
+      >
+        Settings
+      </a>
     </nav>
 
     @if (authService.currentUser$ | async; as user) {
       <div class="sidebar-footer">
-        <span class="user-greeting">{{ user.fullName }}</span>
+        <a routerLink="/dashboard/settings" class="user-greeting user-greeting--link">{{ user.fullName }}</a>
         <button type="button" class="logout-btn" (click)="authService.logout()">Logout</button>
       </div>
     }

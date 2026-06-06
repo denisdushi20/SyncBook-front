@@ -1,0 +1,72 @@
+<section class="user-settings">
+  <header class="settings-header">
+    <h1>Account Settings</h1>
+    <p>View your profile and manage your account security.</p>
+  </header>
+
+  @if (isLoading()) {
+    <p class="loading">Loading account…</p>
+  } @else if (loadError()) {
+    <p class="message message--error">{{ loadError() }}</p>
+  } @else if (profile(); as user) {
+    <section class="settings-section">
+      <h2>Profile</h2>
+      <dl class="info-list">
+        <div class="info-row">
+          <dt>Full name</dt>
+          <dd>{{ user.fullName }}</dd>
+        </div>
+        <div class="info-row">
+          <dt>Email</dt>
+          <dd>{{ user.email }}</dd>
+        </div>
+        <div class="info-row">
+          <dt>Role</dt>
+          <dd>{{ user.role }}</dd>
+        </div>
+        <div class="info-row">
+          <dt>Sign-in method</dt>
+          <dd>{{ providerLabel(user.authProvider) }}</dd>
+        </div>
+      </dl>
+    </section>
+
+    @if (isLocalAccount()) {
+      <section class="settings-section">
+        <h2>Change Password</h2>
+
+        @if (passwordMessage()) {
+          <p class="message message--success">{{ passwordMessage() }}</p>
+        }
+        @if (passwordError()) {
+          <p class="message message--error">{{ passwordError() }}</p>
+        }
+
+        <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+          <div class="field">
+            <label for="currentPassword">Current password</label>
+            <app-password-input formControlName="currentPassword" inputId="currentPassword" />
+          </div>
+          <div class="field">
+            <label for="newPassword">New password</label>
+            <app-password-input formControlName="newPassword" inputId="newPassword" />
+          </div>
+          <div class="field">
+            <label for="confirmPassword">Confirm new password</label>
+            <app-password-input formControlName="confirmPassword" inputId="confirmPassword" />
+            @if (passwordForm.errors?.['mismatch'] && passwordForm.touched) {
+              <span class="field-error">Passwords do not match.</span>
+            }
+          </div>
+          <button type="submit" class="action-btn" [disabled]="isSavingPassword()">
+            {{ isSavingPassword() ? 'Saving…' : 'Update password' }}
+          </button>
+        </form>
+      </section>
+    } @else {
+      <section class="settings-section settings-section--muted">
+        <p>Your account uses Google Sign-In. Password is managed by Google.</p>
+      </section>
+    }
+  }
+</section>

@@ -1,1 +1,42 @@
 @use '../auth-page';
+
+.auth-divider {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin: 1.25rem 0;
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 38%;
+    height: 1px;
+    background: #e2e8f0;
+  }
+
+  &::before {
+    left: 0;
+  }
+
+  &::after {
+    right: 0;
+  }
+}
+
+.forgot-link {
+  text-align: right;
+  margin: -0.5rem 0 1rem;
+
+  a {
+    color: var(--color-emerald);
+    font-size: 0.85rem;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

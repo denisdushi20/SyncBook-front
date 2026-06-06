@@ -1,0 +1,115 @@
+<section class="calendar">
+  <header class="calendar-toolbar">
+    <div class="calendar-nav">
+      <button type="button" class="toolbar-btn" (click)="goPrev()" aria-label="Previous">‹</button>
+      <button type="button" class="toolbar-btn toolbar-btn--today" (click)="goToToday()">Today</button>
+      <button type="button" class="toolbar-btn" (click)="goNext()" aria-label="Next">›</button>
+      <h1 class="calendar-title">{{ rangeLabel() }}</h1>
+    </div>
+
+    <div class="view-toggle">
+      <button
+        type="button"
+        class="view-btn"
+        [class.view-btn--active]="viewMode() === 'month'"
+        (click)="setViewMode('month')"
+      >
+        Month
+      </button>
+      <button
+        type="button"
+        class="view-btn"
+        [class.view-btn--active]="viewMode() === 'week'"
+        (click)="setViewMode('week')"
+      >
+        Week
+      </button>
+      <button
+        type="button"
+        class="view-btn"
+        [class.view-btn--active]="viewMode() === 'day'"
+        (click)="setViewMode('day')"
+      >
+        Day
+      </button>
+    </div>
+  </header>
+
+  @if (errorMessage()) {
+    <p class="calendar-error">{{ errorMessage() }}</p>
+  }
+
+  <div class="calendar-body">
+    @if (isLoading()) {
+      <p class="loading-label">Loading appointments…</p>
+    }
+
+    @switch (viewMode()) {
+      @case ('month') {
+        <div class="month-grid">
+          @for (label of weekdayLabels; track label) {
+            <div class="month-grid__head">{{ label }}</div>
+          }
+          @for (cell of monthCells(); track cell.date.toISOString()) {
+            <div
+              class="month-cell"
+              [class.month-cell--muted]="!cell.isCurrentMonth"
+              [class.month-cell--today]="cell.isToday"
+            >
+              <span class="month-cell__date">{{ cell.date.getDate() }}</span>
+              <div class="month-cell__events">
+                @for (appt of dayAppointments(cell.date); track appt.id) {
+                  <div class="appt-chip" [class]="statusClass(appt.status)">
+                    <span class="appt-chip__time">{{ formatTime(appt.startUtc) }}</span>
+                    <span class="appt-chip__title">{{ appt.serviceName }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+      @case ('week') {
+        <div class="week-grid">
+          <div class="week-grid__corner"></div>
+          @for (day of weekDays(); track day.date.toISOString()) {
+            <div class="week-grid__head" [class.week-grid__head--today]="day.isToday">
+              <span>{{ day.date | date: 'EEE' }}</span>
+              <strong>{{ day.date | date: 'd' }}</strong>
+            </div>
+          }
+          @for (slot of hourSlots; track slot.hour) {
+            <div class="week-grid__time">{{ slot.label }}</div>
+            @for (day of weekDays(); track $index) {
+              <div class="week-cell">
+                @for (appt of hourAppointments(day.date, slot.hour); track appt.id) {
+                  <div class="appt-chip appt-chip--block" [class]="statusClass(appt.status)">
+                    <span class="appt-chip__time">{{ formatTime(appt.startUtc) }}</span>
+                    <span class="appt-chip__title">{{ appt.serviceName }}</span>
+                    <span class="appt-chip__meta">{{ appt.customerName }}</span>
+                  </div>
+                }
+              </div>
+            }
+          }
+        </div>
+      }
+      @case ('day') {
+        <div class="day-grid">
+          @for (slot of hourSlots; track slot.hour) {
+            <div class="day-grid__time">{{ slot.label }}</div>
+            <div class="day-cell">
+              @for (appt of hourAppointments(currentDate(), slot.hour); track appt.id) {
+                <div class="appt-chip appt-chip--block" [class]="statusClass(appt.status)">
+                  <span class="appt-chip__time">{{ formatTime(appt.startUtc) }}</span>
+                  <span class="appt-chip__title">{{ appt.serviceName }}</span>
+                  <span class="appt-chip__meta">{{ appt.customerName }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</section>

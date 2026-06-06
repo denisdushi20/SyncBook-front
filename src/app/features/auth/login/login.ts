@@ -2,10 +2,12 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { GoogleSignInComponent } from '../../../core/components/google-sign-in/google-sign-in';
+import { PasswordInputComponent } from '../../../core/components/password-input/password-input';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, GoogleSignInComponent, PasswordInputComponent],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
@@ -22,6 +24,9 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     if (this.route.snapshot.queryParamMap.get('registered') === 'true') {
       this.successMessage.set('Account created successfully. Please sign in.');
+    }
+    if (this.route.snapshot.queryParamMap.get('reset') === 'true') {
+      this.successMessage.set('Password reset successfully. Please sign in.');
     }
   }
 
@@ -49,5 +54,9 @@ export class LoginComponent implements OnInit {
         this.errorMessage.set('Invalid email or password.');
       }
     });
+  }
+
+  protected onGoogleError(message: string): void {
+    this.errorMessage.set(message);
   }
 }

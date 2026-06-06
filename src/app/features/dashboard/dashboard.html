@@ -1,4 +1,67 @@
 <section class="dashboard">
-  <h1>Live Dashboard</h1>
-  <p>Welcome to your business dashboard. Booking management features will be available in the next phase.</p>
+  <header class="dashboard-header">
+    <h1>Dashboard</h1>
+    <p>Overview of your upcoming bookings and activity.</p>
+  </header>
+
+  @if (errorMessage()) {
+    <p class="dashboard-error">{{ errorMessage() }}</p>
+  }
+
+  @if (stats(); as stats) {
+    <div class="stat-grid">
+      <article class="stat-card">
+        <span class="stat-label">Today</span>
+        <strong class="stat-value">{{ stats.todayCount }}</strong>
+        <span class="stat-hint">appointments</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Pending</span>
+        <strong class="stat-value">{{ stats.pendingCount }}</strong>
+        <span class="stat-hint">awaiting confirmation</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">This week</span>
+        <strong class="stat-value">{{ stats.confirmedThisWeek }}</strong>
+        <span class="stat-hint">confirmed</span>
+      </article>
+    </div>
+
+    <section class="dashboard-panel">
+      <div class="panel-header">
+        <h2>Upcoming appointments</h2>
+        <a routerLink="/dashboard/calendar" class="panel-link">View calendar</a>
+      </div>
+
+      @if (isLoading()) {
+        <p class="loading">Loading…</p>
+      } @else if (stats.upcoming.length === 0) {
+        <p class="empty">No upcoming appointments in the next 7 days.</p>
+      } @else {
+        <ul class="upcoming-list">
+          @for (appointment of stats.upcoming; track appointment.id) {
+            <li class="upcoming-item">
+              <div class="upcoming-time">
+                {{ appointment.startUtc | date: 'EEE, MMM d' }} ·
+                {{ appointment.startUtc | date: 'shortTime' }}
+              </div>
+              <div class="upcoming-details">
+                <strong>{{ appointment.serviceName }}</strong>
+                <span>{{ appointment.customerName }}</span>
+                <span class="status-badge status-badge--{{ appointment.status.toLowerCase() }}">
+                  {{ appointment.status }}
+                </span>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    <section class="quick-links">
+      <a routerLink="/dashboard/calendar" class="quick-link">Calendar</a>
+      <a routerLink="/dashboard/profile" class="quick-link">Business Profile</a>
+      <a routerLink="/dashboard/settings" class="quick-link">Settings</a>
+    </section>
+  }
 </section>

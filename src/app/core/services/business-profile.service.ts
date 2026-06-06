@@ -1,21 +1,39 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { Business } from '../models/business.models';
+import { Business, BusinessServiceItem, DaySchedule } from '../models/business.models';
 
 @Injectable({ providedIn: 'root' })
-export class BusinessService {
+export class BusinessProfileService {
   private readonly http = inject(HttpClient);
 
-  getBusinesses(): Observable<Business[]> {
+  getMyBusiness(): Observable<Business> {
     return this.http
-      .get<Record<string, unknown>[]>('/api/businesses')
-      .pipe(map((items) => items.map((item) => this.normalizeBusiness(item))));
+      .get<Record<string, unknown>>('/api/businesses/me')
+      .pipe(map((item) => this.normalizeBusiness(item)));
   }
 
-  getBusiness(id: string): Observable<Business> {
+  updateWorkingHours(workingHours: DaySchedule[]): Observable<Business> {
     return this.http
-      .get<Record<string, unknown>>(`/api/businesses/${id}`)
+      .put<Record<string, unknown>>('/api/businesses/me/working-hours', { workingHours })
+      .pipe(map((item) => this.normalizeBusiness(item)));
+  }
+
+  addService(service: Omit<BusinessServiceItem, 'id'>): Observable<Business> {
+    return this.http
+      .post<Record<string, unknown>>('/api/businesses/me/services', service)
+      .pipe(map((item) => this.normalizeBusiness(item)));
+  }
+
+  updateService(serviceId: string, service: Omit<BusinessServiceItem, 'id'>): Observable<Business> {
+    return this.http
+      .put<Record<string, unknown>>(`/api/businesses/me/services/${serviceId}`, service)
+      .pipe(map((item) => this.normalizeBusiness(item)));
+  }
+
+  deleteService(serviceId: string): Observable<Business> {
+    return this.http
+      .delete<Record<string, unknown>>(`/api/businesses/me/services/${serviceId}`)
       .pipe(map((item) => this.normalizeBusiness(item)));
   }
 

@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Business, BusinessService } from '../../core/services/business.service';
+import { Business } from '../../core/models/business.models';
+import { BusinessService } from '../../core/services/business.service';
 
 @Component({
   selector: 'app-booking',

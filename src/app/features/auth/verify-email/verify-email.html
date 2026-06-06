@@ -1,0 +1,40 @@
+<div class="auth-page">
+  <div class="auth-card auth-card--wide">
+    <h1>Verify your email</h1>
+    <p class="subtitle">
+      We sent a 6-digit code to <strong>{{ email() }}</strong>
+    </p>
+
+    @if (successMessage()) {
+      <p class="success">{{ successMessage() }}</p>
+    }
+    @if (errorMessage()) {
+      <p class="error">{{ errorMessage() }}</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="field field--otp">
+        <label>Verification code</label>
+        <app-otp-input formControlName="code" />
+        @if (form.controls.code.touched && form.controls.code.invalid) {
+          <span class="field-error">Enter the 6-digit code from your email.</span>
+        }
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Verifying…' : 'Verify & continue' }}
+      </button>
+    </form>
+
+    <p class="footer-link">
+      Didn't get a code?
+      <button type="button" class="link-btn" (click)="resendCode()" [disabled]="isResending()">
+        {{ isResending() ? 'Sending…' : 'Resend code' }}
+      </button>
+    </p>
+
+    <p class="footer-link">
+      <a routerLink="/register">Back to registration</a>
+    </p>
+  </div>
+</div>

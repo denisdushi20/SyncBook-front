@@ -7,6 +7,10 @@
     <p class="error">{{ errorMessage() }}</p>
   }
 
+  <app-google-sign-in (signInError)="onGoogleError($event)" />
+
+  <p class="auth-divider">or register with email</p>
+
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="field-row">
       <div class="field">
@@ -36,7 +40,7 @@
 
     <div class="field">
       <label for="password">Password</label>
-      <input id="password" type="password" formControlName="password" placeholder="••••••" />
+      <app-password-input formControlName="password" inputId="password" placeholder="••••••" />
       @if (form.controls.password.touched && form.controls.password.errors?.['required']) {
         <span class="field-error">Password is required.</span>
       }

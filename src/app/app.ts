@@ -43,8 +43,10 @@ export class App {
   }
 
   private isFullBleedRoute(url: string): boolean {
-    const fullBleedRoutes = ['/', '/booking', '/login', '/register', '/business-onboarding', '/dashboard'];
-    return fullBleedRoutes.includes(this.normalizeUrl(url));
+    const path = this.normalizeUrl(url);
+    if (path.startsWith('/dashboard')) return true;
+    const fullBleedRoutes = ['/', '/booking', '/login', '/register', '/business-onboarding', '/forgot-password', '/reset-password', '/verify-email'];
+    return fullBleedRoutes.includes(path);
   }
 
   private shouldHideChrome(url: string): boolean {

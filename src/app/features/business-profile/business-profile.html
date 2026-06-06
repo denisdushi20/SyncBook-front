@@ -1,0 +1,89 @@
+<section class="business-profile">
+  <header class="profile-header">
+    <h1>Business Profile</h1>
+    <p>Manage your opening hours and service catalog.</p>
+  </header>
+
+  @if (errorMessage()) {
+    <p class="message message--error">{{ errorMessage() }}</p>
+  }
+  @if (successMessage()) {
+    <p class="message message--success">{{ successMessage() }}</p>
+  }
+
+  @if (isLoading()) {
+    <p class="loading">Loading business profile…</p>
+  } @else {
+    <form [formGroup]="hoursForm" (ngSubmit)="saveWorkingHours()" class="profile-section">
+      <h2>Opening Hours</h2>
+
+      <div formArrayName="workingHours" class="hours-list">
+        @for (day of workingHours.controls; track $index) {
+          <div class="hours-row" [formGroupName]="$index">
+            <span class="day-label">{{ day.get('day')?.value }}</span>
+            <label class="open-toggle">
+              <input type="checkbox" formControlName="isOpen" (change)="onDayOpenChange($index)" />
+              Open
+            </label>
+            @if (day.get('isOpen')?.value) {
+              <input type="time" formControlName="openTime" class="time-input" />
+              <span class="time-sep">to</span>
+              <input type="time" formControlName="closeTime" class="time-input" />
+            } @else {
+              <span class="closed-label">Closed</span>
+            }
+          </div>
+        }
+      </div>
+
+      <button type="submit" class="action-btn" [disabled]="isSavingHours()">
+        {{ isSavingHours() ? 'Saving…' : 'Save Opening Hours' }}
+      </button>
+    </form>
+
+    <section class="profile-section">
+      <h2>Services Catalog</h2>
+
+      <ul class="service-list">
+        @for (service of services(); track service.id) {
+          <li class="service-item">
+            <div class="service-info">
+              <strong>{{ service.name }}</strong>
+              @if (service.durationMinutes) {
+                <span>{{ service.durationMinutes }} min</span>
+              }
+            </div>
+            <div class="service-actions">
+              <button type="button" class="link-btn" (click)="startEditService(service)">Edit</button>
+              <button type="button" class="link-btn link-btn--danger" (click)="deleteService(service.id!)">
+                Delete
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+
+      <form [formGroup]="serviceForm" (ngSubmit)="saveService()" class="service-form">
+        <h3>{{ editingServiceId() ? 'Edit Service' : 'Add Service' }}</h3>
+        <div class="service-form-row">
+          <div class="field">
+            <label for="serviceName">Service Name</label>
+            <input id="serviceName" type="text" formControlName="name" placeholder="e.g. Haircut" />
+          </div>
+          <div class="field field--short">
+            <label for="serviceDuration">Duration (min)</label>
+            <input id="serviceDuration" type="number" formControlName="durationMinutes" min="1" />
+          </div>
+        </div>
+        <div class="service-form-actions">
+          <button type="submit" class="action-btn" [disabled]="isSavingService()">
+            {{ isSavingService() ? 'Saving…' : (editingServiceId() ? 'Update Service' : 'Add Service') }}
+          </button>
+          @if (editingServiceId()) {
+            <button type="button" class="secondary-btn" (click)="cancelEditService()">Cancel</button>
+          }
+        </div>
+      </form>
+    </section>
+  }
+</section>

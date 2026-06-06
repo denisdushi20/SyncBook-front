@@ -1,0 +1,32 @@
+@use '../auth-page';
+
+.field--otp {
+  text-align: center;
+
+  label {
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.link-btn {
+  border: none;
+  background: none;
+  color: var(--color-emerald);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.subtitle strong {
+  color: #1e293b;
+}
