@@ -1,0 +1,31 @@
+<section class="booking-detail-page">
+  <div class="container">
+    <a routerLink="/booking" class="back-link">← Back to businesses</a>
+
+    @if (loading()) {
+      <p class="state-message">Loading…</p>
+    } @else if (error()) {
+      <p class="state-message state-message--error">{{ error() }}</p>
+    } @else if (business(); as biz) {
+      <header class="detail-header">
+        @if (biz.image) {
+          <img [src]="biz.image" [alt]="biz.name" class="detail-image" />
+        }
+        <div>
+          <h1>{{ biz.name }}</h1>
+          @if (biz.category) {
+            <span class="detail-category">{{ biz.category }}</span>
+          }
+          @if (biz.description) {
+            <p class="detail-desc">{{ biz.description }}</p>
+          }
+        </div>
+      </header>
+
+      <div class="booking-form-card">
+        <h2>Book an appointment</h2>
+        <app-public-booking-panel [businessId]="biz.id" />
+      </div>
+    }
+  </div>
+</section>

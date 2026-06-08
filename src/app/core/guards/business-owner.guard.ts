@@ -6,9 +6,17 @@ export const businessOwnerGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.isBusinessOwner()) {
+  if (authService.needsBusinessOnboarding()) {
+    return router.createUrlTree(['/business-onboarding']);
+  }
+
+  if (authService.isBusinessOwner() && authService.getCurrentUser()?.businessId) {
     return true;
   }
 
-  return router.createUrlTree(['/']);
+  if (authService.isCustomer()) {
+    return router.createUrlTree(['/']);
+  }
+
+  return router.createUrlTree(['/login']);
 };

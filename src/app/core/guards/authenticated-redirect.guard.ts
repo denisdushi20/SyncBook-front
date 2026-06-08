@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-export const guestGuard: CanActivateFn = (_route, state) => {
+export const authenticatedRedirectGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
@@ -10,9 +10,10 @@ export const guestGuard: CanActivateFn = (_route, state) => {
     return true;
   }
 
-  if (authService.needsBusinessOnboarding() && state.url.includes('business-onboarding')) {
+  const route = authService.getPostLoginRoute();
+  if (route === '/') {
     return true;
   }
 
-  return router.createUrlTree([authService.getPostLoginRoute()]);
+  return router.createUrlTree([route]);
 };

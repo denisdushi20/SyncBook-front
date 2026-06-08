@@ -1,0 +1,60 @@
+<section class="staff-management">
+  <header class="profile-header">
+    <h1>Staff Schedule</h1>
+    <p>Manage your bookable status and weekly working hours.</p>
+  </header>
+
+  @if (errorMessage()) {
+    <p class="message message--error">{{ errorMessage() }}</p>
+  }
+  @if (successMessage()) {
+    <p class="message message--success">{{ successMessage() }}</p>
+  }
+
+  @if (isLoading()) {
+    <p class="loading">Loading staff profile…</p>
+  } @else {
+    <form [formGroup]="scheduleForm" (ngSubmit)="saveSchedule()" class="profile-section">
+      @if (staffName()) {
+        <p class="staff-name">Profile: <strong>{{ staffName() }}</strong></p>
+      }
+
+      <label class="bookable-toggle">
+        <input type="checkbox" formControlName="isBookable" />
+        Available for bookings
+      </label>
+      <p class="hint">
+        When disabled, you will not appear in the staff picker and cannot receive new appointments.
+      </p>
+
+      <h2>Weekly Shift Hours</h2>
+
+      <div formArrayName="weeklySchedule" class="hours-list">
+        @for (day of weeklySchedule.controls; track $index) {
+          <div class="hours-row" [formGroupName]="$index">
+            <span class="day-label">{{ day.get('dayOfWeek')?.value }}</span>
+            <label class="open-toggle">
+              <input
+                type="checkbox"
+                formControlName="isAvailable"
+                (change)="onDayAvailableChange($index)"
+              />
+              Available
+            </label>
+            @if (day.get('isAvailable')?.value) {
+              <input type="time" formControlName="startTime" class="time-input" />
+              <span class="time-sep">to</span>
+              <input type="time" formControlName="endTime" class="time-input" />
+            } @else {
+              <span class="closed-label">Unavailable</span>
+            }
+          </div>
+        }
+      </div>
+
+      <button type="submit" class="action-btn" [disabled]="isSaving()">
+        {{ isSaving() ? 'Saving…' : 'Save Schedule' }}
+      </button>
+    </form>
+  }
+</section>

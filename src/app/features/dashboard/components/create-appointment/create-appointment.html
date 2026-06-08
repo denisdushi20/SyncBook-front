@@ -1,0 +1,115 @@
+<div class="create-overlay" (click)="onOverlayClick($event)">
+  <div class="create-modal" role="dialog" aria-labelledby="create-appointment-title">
+    <header class="create-modal__header">
+      <h2 id="create-appointment-title">New Appointment</h2>
+      <button type="button" class="close-btn" (click)="closed.emit()" aria-label="Close">×</button>
+    </header>
+
+    <p class="subtitle">Book a client appointment directly on your calendar.</p>
+
+    @if (errorMessage()) {
+      <p class="error">{{ errorMessage() }}</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="field">
+        <label for="customerName">Client Name</label>
+        <input id="customerName" type="text" formControlName="customerName" placeholder="Jane Doe" />
+        @if (form.controls.customerName.touched && form.controls.customerName.errors?.['required']) {
+          <span class="field-error">Client name is required.</span>
+        }
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="customerEmail">Email</label>
+          <input id="customerEmail" type="email" formControlName="customerEmail" placeholder="jane@example.com" />
+          @if (form.controls.customerEmail.touched && form.controls.customerEmail.errors?.['required']) {
+            <span class="field-error">Email is required.</span>
+          }
+          @if (form.controls.customerEmail.touched && form.controls.customerEmail.errors?.['email']) {
+            <span class="field-error">Enter a valid email address.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="customerPhone">Phone</label>
+          <input id="customerPhone" type="tel" formControlName="customerPhone" placeholder="+1 555 000 0000" />
+          @if (form.controls.customerPhone.touched && form.controls.customerPhone.errors?.['required']) {
+            <span class="field-error">Phone is required.</span>
+          }
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="staffId">Staff Member</label>
+        <select id="staffId" formControlName="staffId">
+          <option value="" disabled>Select a staff member</option>
+          @for (member of staffMembers(); track member.id) {
+            <option [value]="member.id">{{ member.fullName }}</option>
+          }
+        </select>
+        @if (form.controls.staffId.touched && form.controls.staffId.errors?.['required']) {
+          <span class="field-error">Staff member is required.</span>
+        }
+        @if (staffMembers().length === 0) {
+          <span class="field-hint">No bookable staff members. Enable booking in Staff settings.</span>
+        }
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="serviceId">Service</label>
+          <select id="serviceId" formControlName="serviceId">
+            <option value="" disabled>Select a service</option>
+            @for (service of services(); track service.id ?? service.name) {
+              <option [value]="service.id">{{ service.name }}</option>
+            }
+          </select>
+          @if (form.controls.serviceId.touched && form.controls.serviceId.errors?.['required']) {
+            <span class="field-error">Service is required.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="date">Date</label>
+          <input id="date" type="date" formControlName="date" />
+          @if (form.controls.date.touched && form.controls.date.errors?.['required']) {
+            <span class="field-error">Date is required.</span>
+          }
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Available Time Slots</label>
+        @if (isLoadingSlots()) {
+          <p class="slots-hint">Loading available slots…</p>
+        } @else if (!form.controls.staffId.value || !form.controls.serviceId.value || !form.controls.date.value) {
+          <p class="slots-hint">Select a staff member, service, and date to see available slots.</p>
+        } @else if (availableSlots().length === 0) {
+          <p class="slots-hint">No available slots for this day.</p>
+        } @else {
+          <div class="slot-pills">
+            @for (slot of availableSlots(); track slot.startUtc) {
+              <button
+                type="button"
+                class="slot-pill"
+                [class.slot-pill--active]="selectedSlot()?.startUtc === slot.startUtc"
+                (click)="selectSlot(slot)"
+              >
+                {{ slot.label }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="closed.emit()">Cancel</button>
+        <button type="submit" class="btn-primary" [disabled]="isSubmitting()">
+          {{ isSubmitting() ? 'Confirming…' : 'Confirm' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

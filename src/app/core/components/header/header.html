@@ -9,7 +9,7 @@
 
     @if (authService.currentUser$ | async; as user) {
       @if (user.role === 'Customer') {
-        <a routerLink="/bookings" class="nav-link">My Bookings</a>
+        <a routerLink="/booking" class="nav-link">My Bookings</a>
       }
       @if (user.role === 'BusinessOwner') {
         <a routerLink="/dashboard" class="nav-link">Live Dashboard</a>

@@ -30,9 +30,10 @@ export class UserSettingsComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    this.authService.getCurrentUser().subscribe({
+    this.authService.getCurrentUserProfile().subscribe({
       next: (profile) => {
         this.profile.set(profile);
+        this.configurePasswordForm(profile.authProvider);
         this.isLoading.set(false);
       },
       error: () => {
@@ -44,6 +45,20 @@ export class UserSettingsComponent implements OnInit {
 
   protected isLocalAccount(): boolean {
     return this.profile()?.authProvider === 'Local';
+  }
+
+  protected isGoogleAccount(): boolean {
+    return this.profile()?.authProvider === 'Google';
+  }
+
+  private configurePasswordForm(authProvider: AuthProvider): void {
+    const currentPasswordControl = this.passwordForm.controls.currentPassword;
+    if (authProvider === 'Google') {
+      currentPasswordControl.clearValidators();
+    } else {
+      currentPasswordControl.setValidators(Validators.required);
+    }
+    currentPasswordControl.updateValueAndValidity();
   }
 
   protected providerLabel(provider: AuthProvider | undefined): string {
@@ -61,7 +76,11 @@ export class UserSettingsComponent implements OnInit {
     this.passwordMessage.set(null);
     this.passwordError.set(null);
 
-    this.authService.changePassword(currentPassword, newPassword).subscribe({
+    const request = this.isLocalAccount()
+      ? this.authService.changePassword(newPassword, currentPassword)
+      : this.authService.changePassword(newPassword);
+
+    request.subscribe({
       next: () => {
         this.isSavingPassword.set(false);
         this.passwordMessage.set('Password updated successfully.');

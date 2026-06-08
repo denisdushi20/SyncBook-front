@@ -234,16 +234,7 @@
             <span class="mock-title">Book an appointment</span>
           </div>
           <div class="mock-body">
-            <p class="mock-label">Select service</p>
-            <div class="mock-select mock-select--active">Haircut &amp; Styling</div>
-            <p class="mock-label">Available slots — Today</p>
-            <div class="mock-slots">
-              <span class="mock-slot">9:00</span>
-              <span class="mock-slot mock-slot--active">10:30</span>
-              <span class="mock-slot">11:00</span>
-              <span class="mock-slot">14:00</span>
-            </div>
-            <button type="button" class="mock-btn">Confirm Booking</button>
+            <app-demo-booking-panel (booked)="onDemoBooked($event)" />
           </div>
         </div>
 
@@ -267,21 +258,23 @@
           </div>
           <div class="mock-body">
             <p class="mock-label">Today's bookings</p>
-            <div class="mock-booking-row mock-booking-row--static">
-              <span class="mock-time">9:00 AM</span>
-              <span class="mock-service">Consultation</span>
-              <span class="mock-status mock-status--confirmed">Confirmed</span>
-            </div>
-            <div class="mock-booking-row mock-booking-row--live">
-              <span class="mock-time">10:30 AM</span>
-              <span class="mock-service">Haircut &amp; Styling</span>
-              <span class="mock-status mock-status--new">Just booked</span>
-            </div>
-            <div class="mock-booking-row mock-booking-row--static">
-              <span class="mock-time">2:00 PM</span>
-              <span class="mock-service">Color Treatment</span>
-              <span class="mock-status mock-status--confirmed">Confirmed</span>
-            </div>
+            @if (todayAppointments().length === 0) {
+              <p class="mock-empty">No bookings yet today.</p>
+            } @else {
+              @for (appt of todayAppointments(); track appt.id) {
+                <div
+                  class="mock-booking-row"
+                  [class.mock-booking-row--static]="appt.status === 'Confirmed'"
+                  [class.mock-booking-row--live]="appt.status === 'Pending'"
+                >
+                  <span class="mock-time">{{ formatTime(appt.startUtc) }}</span>
+                  <span class="mock-service">{{ appt.serviceName }}</span>
+                  <span class="mock-status" [class]="statusClass(appt.status)">
+                    {{ appt.status === 'Pending' ? 'Just booked' : appt.status }}
+                  </span>
+                </div>
+              }
+            }
           </div>
         </div>
       </div>

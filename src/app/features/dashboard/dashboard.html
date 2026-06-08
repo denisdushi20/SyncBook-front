@@ -42,8 +42,8 @@
           @for (appointment of stats.upcoming; track appointment.id) {
             <li class="upcoming-item">
               <div class="upcoming-time">
-                {{ appointment.startUtc | date: 'EEE, MMM d' }} ·
-                {{ appointment.startUtc | date: 'shortTime' }}
+                {{ appointment.startUtc | date: 'EEE, MMM d' : 'UTC' }} ·
+                {{ appointment.startUtc | date: 'shortTime' : 'UTC' }}
               </div>
               <div class="upcoming-details">
                 <strong>{{ appointment.serviceName }}</strong>

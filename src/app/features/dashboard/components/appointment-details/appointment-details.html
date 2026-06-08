@@ -1,0 +1,69 @@
+<div class="details-overlay" (click)="onOverlayClick($event)">
+  <div class="details-modal" role="dialog" aria-labelledby="appointment-details-title">
+    <header class="details-modal__header">
+      <h2 id="appointment-details-title">Appointment Details</h2>
+      <button type="button" class="close-btn" (click)="closed.emit()" aria-label="Close">×</button>
+    </header>
+
+    @if (errorMessage()) {
+      <p class="error">{{ errorMessage() }}</p>
+    }
+
+    <dl class="details-list">
+      <div class="details-row">
+        <dt>Client</dt>
+        <dd>{{ appointment().customerName }}</dd>
+      </div>
+      <div class="details-row">
+        <dt>Email</dt>
+        <dd>{{ appointment().customerEmail }}</dd>
+      </div>
+      @if (appointment().customerPhone) {
+        <div class="details-row">
+          <dt>Phone</dt>
+          <dd>{{ appointment().customerPhone }}</dd>
+        </div>
+      }
+      <div class="details-row">
+        <dt>Service</dt>
+        <dd>{{ appointment().serviceName }}</dd>
+      </div>
+      @if (appointment().staffName) {
+        <div class="details-row">
+          <dt>Staff</dt>
+          <dd>{{ appointment().staffName }}</dd>
+        </div>
+      }
+      <div class="details-row">
+        <dt>Start time</dt>
+        <dd>{{ appointment().startUtc | date: 'medium' : 'UTC' }}</dd>
+      </div>
+      <div class="details-row">
+        <dt>End time</dt>
+        <dd>{{ appointment().endUtc | date: 'medium' : 'UTC' }}</dd>
+      </div>
+      <div class="details-row">
+        <dt>Status</dt>
+        <dd>
+          <span class="status-badge status-badge--{{ appointment().status.toLowerCase() }}">
+            {{ appointment().status }}
+          </span>
+        </dd>
+      </div>
+    </dl>
+
+    <div class="details-actions">
+      @if (appointment().status === 'Pending') {
+        <button
+          type="button"
+          class="btn-primary"
+          [disabled]="isConfirming()"
+          (click)="confirmAppointment()"
+        >
+          {{ isConfirming() ? 'Confirming…' : 'Mark as Confirmed' }}
+        </button>
+      }
+      <button type="button" class="btn-secondary" (click)="closed.emit()">Close</button>
+    </div>
+  </div>
+</div>

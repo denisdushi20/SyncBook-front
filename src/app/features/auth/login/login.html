@@ -11,7 +11,7 @@
     <p class="error">{{ errorMessage() }}</p>
   }
 
-  <app-google-sign-in (signInError)="onGoogleError($event)" />
+  <app-google-sign-in intent="business" (signInError)="onGoogleError($event)" />
 
   <p class="auth-divider">or continue with email</p>
 

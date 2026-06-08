@@ -1,4 +1,10 @@
 import { CalendarViewMode } from '../../../core/models/business.models';
+import {
+  formatWallClockTime,
+  getWallClockHour,
+  isSameWallClockDay,
+  wallClockSortKey
+} from '../../../core/utils/appointment-time';
 
 export interface CalendarRange {
   from: Date;
@@ -157,20 +163,17 @@ export function getAppointmentsForDay<T extends { startUtc: string; status: stri
   day: Date
 ): T[] {
   return appointments
-    .filter((appointment) => {
-      const start = new Date(appointment.startUtc);
-      return isSameDay(start, day) && appointment.status !== 'Cancelled';
-    })
-    .sort((a, b) => new Date(a.startUtc).getTime() - new Date(b.startUtc).getTime());
+    .filter(
+      (appointment) =>
+        isSameWallClockDay(appointment.startUtc, day) && appointment.status !== 'Cancelled'
+    )
+    .sort((a, b) => wallClockSortKey(a.startUtc) - wallClockSortKey(b.startUtc));
 }
 
 export function getAppointmentHour(startUtc: string): number {
-  return new Date(startUtc).getHours();
+  return getWallClockHour(startUtc);
 }
 
 export function formatAppointmentTime(startUtc: string): string {
-  return new Date(startUtc).toLocaleTimeString(undefined, {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  return formatWallClockTime(startUtc);
 }

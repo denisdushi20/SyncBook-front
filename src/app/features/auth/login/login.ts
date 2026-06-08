@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { GoogleSignInComponent } from '../../../core/components/google-sign-in/google-sign-in';
 import { PasswordInputComponent } from '../../../core/components/password-input/password-input';
@@ -14,7 +14,6 @@ import { PasswordInputComponent } from '../../../core/components/password-input/
 export class LoginComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
   protected readonly errorMessage = signal<string | null>(null);
@@ -47,7 +46,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.form.getRawValue()).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        this.router.navigate([this.authService.getPostLoginRoute()]);
+        this.authService.navigateAfterAuth();
       },
       error: () => {
         this.isSubmitting.set(false);
@@ -57,6 +56,8 @@ export class LoginComponent implements OnInit {
   }
 
   protected onGoogleError(message: string): void {
-    this.errorMessage.set(message);
+    if (message) {
+      this.errorMessage.set(message);
+    }
   }
 }

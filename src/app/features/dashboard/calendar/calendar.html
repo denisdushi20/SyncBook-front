@@ -7,6 +7,11 @@
       <h1 class="calendar-title">{{ rangeLabel() }}</h1>
     </div>
 
+    <div class="calendar-actions">
+      <button type="button" class="toolbar-btn toolbar-btn--create" (click)="openCreateModal()">
+        New Appointment
+      </button>
+
     <div class="view-toggle">
       <button
         type="button"
@@ -33,7 +38,24 @@
         Day
       </button>
     </div>
+    </div>
   </header>
+
+  @if (showCreateModal()) {
+    <app-create-appointment
+      [initialDate]="prefillDate()"
+      (closed)="closeCreateModal()"
+      (created)="onAppointmentCreated()"
+    />
+  }
+
+  @if (selectedAppointment(); as appt) {
+    <app-appointment-details
+      [appointment]="appt"
+      (closed)="closeDetails()"
+      (updated)="onAppointmentUpdated()"
+    />
+  }
 
   @if (errorMessage()) {
     <p class="calendar-error">{{ errorMessage() }}</p>
@@ -56,10 +78,24 @@
               [class.month-cell--muted]="!cell.isCurrentMonth"
               [class.month-cell--today]="cell.isToday"
             >
-              <span class="month-cell__date">{{ cell.date.getDate() }}</span>
+              <div class="month-cell__header">
+                <span class="month-cell__date">{{ cell.date.getDate() }}</span>
+                <button
+                  type="button"
+                  class="cell-add-btn"
+                  (click)="openCreateModal(cell.date); $event.stopPropagation()"
+                  aria-label="Add appointment"
+                >
+                  +
+                </button>
+              </div>
               <div class="month-cell__events">
                 @for (appt of dayAppointments(cell.date); track appt.id) {
-                  <div class="appt-chip" [class]="statusClass(appt.status)">
+                  <div
+                    class="appt-chip"
+                    [class]="statusClass(appt.status)"
+                    (click)="openDetails(appt); $event.stopPropagation()"
+                  >
                     <span class="appt-chip__time">{{ formatTime(appt.startUtc) }}</span>
                     <span class="appt-chip__title">{{ appt.serviceName }}</span>
                   </div>
@@ -76,14 +112,34 @@
             <div class="week-grid__head" [class.week-grid__head--today]="day.isToday">
               <span>{{ day.date | date: 'EEE' }}</span>
               <strong>{{ day.date | date: 'd' }}</strong>
+              <button
+                type="button"
+                class="cell-add-btn cell-add-btn--head"
+                (click)="openCreateModal(day.date)"
+                aria-label="Add appointment"
+              >
+                +
+              </button>
             </div>
           }
           @for (slot of hourSlots; track slot.hour) {
             <div class="week-grid__time">{{ slot.label }}</div>
             @for (day of weekDays(); track $index) {
               <div class="week-cell">
+                <button
+                  type="button"
+                  class="cell-add-btn cell-add-btn--inline"
+                  (click)="openCreateModal(day.date)"
+                  aria-label="Add appointment"
+                >
+                  +
+                </button>
                 @for (appt of hourAppointments(day.date, slot.hour); track appt.id) {
-                  <div class="appt-chip appt-chip--block" [class]="statusClass(appt.status)">
+                  <div
+                    class="appt-chip appt-chip--block"
+                    [class]="statusClass(appt.status)"
+                    (click)="openDetails(appt); $event.stopPropagation()"
+                  >
                     <span class="appt-chip__time">{{ formatTime(appt.startUtc) }}</span>
                     <span class="appt-chip__title">{{ appt.serviceName }}</span>
                     <span class="appt-chip__meta">{{ appt.customerName }}</span>
@@ -99,8 +155,20 @@
           @for (slot of hourSlots; track slot.hour) {
             <div class="day-grid__time">{{ slot.label }}</div>
             <div class="day-cell">
+              <button
+                type="button"
+                class="cell-add-btn cell-add-btn--inline"
+                (click)="openCreateModal(currentDate())"
+                aria-label="Add appointment"
+              >
+                +
+              </button>
               @for (appt of hourAppointments(currentDate(), slot.hour); track appt.id) {
-                <div class="appt-chip appt-chip--block" [class]="statusClass(appt.status)">
+                <div
+                  class="appt-chip appt-chip--block"
+                  [class]="statusClass(appt.status)"
+                  (click)="openDetails(appt); $event.stopPropagation()"
+                >
                   <span class="appt-chip__time">{{ formatTime(appt.startUtc) }}</span>
                   <span class="appt-chip__title">{{ appt.serviceName }}</span>
                   <span class="appt-chip__meta">{{ appt.customerName }}</span>

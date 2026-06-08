@@ -65,6 +65,8 @@ export class RegisterComponent {
   }
 
   protected onGoogleError(message: string): void {
-    this.errorMessage.set(message);
+    if (message) {
+      this.errorMessage.set(message);
+    }
   }
 }

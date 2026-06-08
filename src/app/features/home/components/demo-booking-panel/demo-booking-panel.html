@@ -1,0 +1,52 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="demo-form">
+  <label class="mock-label">Business</label>
+  <select formControlName="businessId" class="mock-select mock-select--active">
+    @for (business of businesses; track business.id) {
+      <option [value]="business.id">{{ business.name }}</option>
+    }
+  </select>
+
+  <label class="mock-label">Service</label>
+  <select formControlName="serviceId" class="mock-select">
+    <option value="" disabled>Select a service</option>
+    @for (service of servicesForSelectedBusiness(); track service.id) {
+      <option [value]="service.id">{{ service.name }}</option>
+    }
+  </select>
+
+  <label class="mock-label">Your name</label>
+  <input
+    type="text"
+    formControlName="customerName"
+    class="mock-select"
+    placeholder="Jane Doe"
+  />
+
+  @if (form.controls.serviceId.value) {
+    <label class="mock-label">Available slots</label>
+    <div class="mock-slots">
+      @for (slot of availableSlots(); track slot) {
+        <button
+          type="button"
+          class="mock-slot"
+          [class.mock-slot--active]="selectedSlot() === slot"
+          (click)="selectSlot(slot)"
+        >
+          {{ slot }}
+        </button>
+      }
+    </div>
+  }
+
+  @if (successMessage()) {
+    <p class="demo-success">{{ successMessage() }}</p>
+  }
+
+  <button
+    type="submit"
+    class="mock-btn"
+    [disabled]="!selectedSlot() || form.invalid"
+  >
+    Book appointment (demo)
+  </button>
+</form>

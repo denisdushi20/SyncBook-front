@@ -6,6 +6,7 @@ import { BusinessServiceItem, DaySchedule } from '../models/business.models';
 
 export type UserRole = 'Customer' | 'BusinessOwner';
 export type AuthProvider = 'Local' | 'Google';
+export type GoogleSignInIntent = 'login' | 'business';
 
 export interface AuthUser {
   id: string;
@@ -156,18 +157,27 @@ export class AuthService {
     );
   }
 
-  loginWithGoogle(idToken: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>('/api/auth/google', { idToken }).pipe(
+  loginWithGoogle(idToken: string, intent: GoogleSignInIntent = 'login'): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>('/api/auth/google', { idToken, intent }).pipe(
       tap((response) => this.persistSession(response))
     );
   }
 
-  getCurrentUser(): Observable<UserProfile> {
+  completeBusinessOnboarding(business: BusinessOnboardingData): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>('/api/auth/complete-business-onboarding', { business }).pipe(
+      tap((response) => this.persistSession(response))
+    );
+  }
+
+  getCurrentUserProfile(): Observable<UserProfile> {
     return this.http.get<UserProfile>('/api/auth/me');
   }
 
-  changePassword(currentPassword: string, newPassword: string): Observable<void> {
-    return this.http.put<void>('/api/auth/password', { currentPassword, newPassword });
+  changePassword(newPassword: string, currentPassword?: string): Observable<void> {
+    const body = currentPassword
+      ? { currentPassword, newPassword }
+      : { newPassword };
+    return this.http.put<void>('/api/auth/password', body);
   }
 
   forgotPassword(email: string): Observable<MessageResponse> {
@@ -185,8 +195,33 @@ export class AuthService {
     this.router.navigate(['/']);
   }
 
+  getCurrentUser(): AuthUser | null {
+    return this.currentUserSubject.value;
+  }
+
   getPostLoginRoute(): string {
-    return this.isBusinessOwner() ? '/dashboard' : '/';
+    const user = this.currentUserSubject.value;
+    if (!user) return '/';
+
+    if (user.role === 'BusinessOwner') {
+      return user.businessId ? '/dashboard' : '/business-onboarding';
+    }
+
+    return '/';
+  }
+
+  navigateAfterAuth(): void {
+    const route = this.getPostLoginRoute();
+    void this.router.navigateByUrl(route).then((navigated) => {
+      if (!navigated) {
+        window.location.assign(route);
+      }
+    });
+  }
+
+  needsBusinessOnboarding(): boolean {
+    const user = this.currentUserSubject.value;
+    return user?.role === 'BusinessOwner' && !user.businessId;
   }
 
   isAuthenticated(): boolean {

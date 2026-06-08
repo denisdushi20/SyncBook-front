@@ -3,6 +3,11 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { Appointment } from '../../core/models/business.models';
+import {
+  isSameWallClockDay,
+  wallClockDayStart,
+  wallClockSortKey
+} from '../../core/utils/appointment-time';
 import { AppointmentService } from './services/appointment.service';
 
 interface DashboardStats {
@@ -51,23 +56,23 @@ export class DashboardComponent implements OnInit {
     startOfToday: Date,
     endOfWeek: Date
   ): DashboardStats {
-    const endOfToday = new Date(startOfToday);
-    endOfToday.setDate(endOfToday.getDate() + 1);
-
-    const todayCount = appointments.filter((a) => {
-      const start = new Date(a.startUtc);
-      return start >= startOfToday && start < endOfToday && a.status !== 'Cancelled';
-    }).length;
+    const todayCount = appointments.filter(
+      (a) => isSameWallClockDay(a.startUtc, startOfToday) && a.status !== 'Cancelled'
+    ).length;
 
     const pendingCount = appointments.filter((a) => a.status === 'Pending').length;
 
     const confirmedThisWeek = appointments.filter(
-      (a) => a.status === 'Confirmed' && new Date(a.startUtc) < endOfWeek
+      (a) => a.status === 'Confirmed' && wallClockSortKey(a.startUtc) < wallClockDayStart(endOfWeek)
     ).length;
 
     const upcoming = appointments
-      .filter((a) => a.status !== 'Cancelled' && new Date(a.startUtc) >= startOfToday)
-      .sort((a, b) => new Date(a.startUtc).getTime() - new Date(b.startUtc).getTime())
+      .filter(
+        (a) =>
+          a.status !== 'Cancelled' &&
+          wallClockSortKey(a.startUtc) >= wallClockDayStart(startOfToday)
+      )
+      .sort((a, b) => wallClockSortKey(a.startUtc) - wallClockSortKey(b.startUtc))
       .slice(0, 5);
 
     return { todayCount, pendingCount, confirmedThisWeek, upcoming };

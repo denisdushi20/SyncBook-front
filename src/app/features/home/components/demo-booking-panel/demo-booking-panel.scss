@@ -1,0 +1,38 @@
+.demo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.demo-form select,
+.demo-form input[type='text'] {
+  width: 100%;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.demo-form input[type='text'] {
+  cursor: text;
+  color: #fff;
+}
+
+.demo-success {
+  margin: 0.75rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--color-emerald, #10b981);
+}
+
+.mock-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mock-btn:not(:disabled) {
+  cursor: pointer;
+}
+
+.mock-slot {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}

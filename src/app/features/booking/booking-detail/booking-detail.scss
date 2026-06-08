@@ -1,0 +1,120 @@
+.booking-detail-page {
+  padding: 2rem 0 4rem;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: #0f766e;
+  text-decoration: none;
+  font-size: 0.9375rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.state-message {
+  color: #64748b;
+
+  &--error {
+    color: #b91c1c;
+  }
+}
+
+.detail-header {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+  align-items: flex-start;
+
+  h1 {
+    margin: 0 0 0.35rem;
+    font-size: 1.75rem;
+    color: #1e293b;
+  }
+}
+
+.detail-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.detail-category {
+  display: inline-block;
+  font-size: 0.8125rem;
+  color: #0f766e;
+  background: rgba(15, 118, 110, 0.1);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  margin-bottom: 0.5rem;
+}
+
+.detail-desc {
+  margin: 0.5rem 0 0;
+  color: #64748b;
+  font-size: 0.9375rem;
+}
+
+.booking-form-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.75rem;
+
+  h2 {
+    margin: 0 0 1.25rem;
+    font-size: 1.25rem;
+    color: #1e293b;
+  }
+
+  ::ng-deep .booking-panel {
+    .field input,
+    .field select {
+      border-color: #cbd5e1;
+      background: #fff;
+      color: #1e293b;
+    }
+
+    .field label {
+      color: #334155;
+      opacity: 1;
+    }
+
+    .slot-pill {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      color: #475569;
+
+      &--active {
+        border-color: #0f766e;
+        color: #0f766e;
+        background: rgba(15, 118, 110, 0.1);
+      }
+    }
+
+    .panel-error {
+      color: #b91c1c;
+      background: #fef2f2;
+      border-color: #fecaca;
+    }
+
+    .panel-success {
+      color: #047857;
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+    }
+
+    .btn-primary {
+      background: #0f766e;
+    }
+  }
+}

@@ -6,6 +6,10 @@ export const pendingRegistrationGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
+  if (authService.needsBusinessOnboarding()) {
+    return true;
+  }
+
   if (authService.isAuthenticated()) {
     authService.clearPendingRegistration();
     return router.createUrlTree([authService.getPostLoginRoute()]);

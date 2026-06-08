@@ -32,7 +32,17 @@ export class BusinessOnboardingComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    if (!this.authService.getPendingRegistration()) {
+    const pending = this.authService.getPendingRegistration();
+    const user = this.authService.getCurrentUser();
+
+    if (this.authService.needsBusinessOnboarding()) {
+      if (user?.email) {
+        this.form.patchValue({ email: user.email });
+      }
+      return;
+    }
+
+    if (!pending) {
       this.router.navigate(['/register']);
     }
   }
@@ -108,7 +118,9 @@ export class BusinessOnboardingComponent implements OnInit {
     }
 
     const pending = this.authService.getPendingRegistration();
-    if (!pending) {
+    const isGoogleOnboarding = this.authService.needsBusinessOnboarding();
+
+    if (!pending && !isGoogleOnboarding) {
       this.router.navigate(['/register']);
       return;
     }
@@ -119,7 +131,16 @@ export class BusinessOnboardingComponent implements OnInit {
     const { name, email, phone, category, description, image, services, workingHours } =
       this.form.getRawValue();
 
-    const fullName = `${pending.firstName} ${pending.lastName}`.trim();
+    const businessPayload = {
+      name,
+      email,
+      phone,
+      category,
+      description,
+      image,
+      services,
+      workingHours
+    };
 
     this.authService.checkBusinessNameAvailable(name).subscribe({
       next: ({ available }) => {
@@ -129,22 +150,69 @@ export class BusinessOnboardingComponent implements OnInit {
           return;
         }
 
-        this.submitRegistration(pending, fullName, {
-          name,
-          email,
-          phone,
-          category,
-          description,
-          image,
-          services,
-          workingHours
-        });
+        if (isGoogleOnboarding) {
+          this.submitGoogleOnboarding(businessPayload);
+          return;
+        }
+
+        if (!pending) {
+          this.router.navigate(['/register']);
+          return;
+        }
+
+        const fullName = `${pending.firstName} ${pending.lastName}`.trim();
+        this.submitRegistration(pending, fullName, businessPayload);
       },
       error: () => {
         this.isSubmitting.set(false);
         this.errorMessage.set('Unable to verify business name availability. Please try again.');
       }
     });
+  }
+
+  private submitGoogleOnboarding(businessData: {
+    name: string;
+    email: string;
+    phone: string;
+    category: string;
+    description: string;
+    image: string;
+    services: { name: string; durationMinutes: string }[];
+    workingHours: { day: string; isOpen: boolean; openTime: string; closeTime: string }[];
+  }): void {
+    const { name, email, phone, category, description, image, services, workingHours } = businessData;
+
+    this.authService
+      .completeBusinessOnboarding({
+        name,
+        email,
+        phone: phone || undefined,
+        category: category || undefined,
+        description: description || undefined,
+        image: image || undefined,
+        services: services
+          .filter((s) => s.name.trim())
+          .map((s) => ({
+            name: s.name.trim(),
+            durationMinutes: s.durationMinutes ? Number(s.durationMinutes) : undefined
+          })),
+        workingHours: workingHours.map((d) => ({
+          day: d.day,
+          isOpen: d.isOpen,
+          openTime: d.isOpen ? d.openTime : undefined,
+          closeTime: d.isOpen ? d.closeTime : undefined
+        }))
+      })
+      .subscribe({
+        next: () => {
+          this.isSubmitting.set(false);
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err) => {
+          this.isSubmitting.set(false);
+          this.errorMessage.set(err.error?.message ?? 'Business onboarding failed. Please try again.');
+        }
+      });
   }
 
   private submitRegistration(

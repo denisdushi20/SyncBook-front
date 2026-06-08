@@ -5,7 +5,7 @@
       <h1>Book a Service</h1>
       <p class="hero-subtitle">
         Browse businesses registered on SyncBook, explore their services and working hours, and
-        reserve your next appointment — real-time slot booking coming soon.
+        reserve your next appointment in real time.
       </p>
     </div>
   </div>
@@ -77,9 +77,9 @@
                   </div>
                 }
 
-                <button type="button" class="btn btn--disabled btn--block" disabled>
-                  Book — Coming soon
-                </button>
+                <a [routerLink]="['/booking', business.id]" class="btn btn--primary btn--block">
+                  Book now
+                </a>
               </div>
             </article>
           }

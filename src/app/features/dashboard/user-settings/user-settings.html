@@ -31,42 +31,42 @@
       </dl>
     </section>
 
-    @if (isLocalAccount()) {
-      <section class="settings-section">
-        <h2>Change Password</h2>
+    <section class="settings-section">
+      <h2>Change Password</h2>
 
-        @if (passwordMessage()) {
-          <p class="message message--success">{{ passwordMessage() }}</p>
-        }
-        @if (passwordError()) {
-          <p class="message message--error">{{ passwordError() }}</p>
-        }
+      @if (isGoogleAccount()) {
+        <p class="settings-hint">Set a password to also sign in with email and password.</p>
+      }
 
-        <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+      @if (passwordMessage()) {
+        <p class="message message--success">{{ passwordMessage() }}</p>
+      }
+      @if (passwordError()) {
+        <p class="message message--error">{{ passwordError() }}</p>
+      }
+
+      <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+        @if (isLocalAccount()) {
           <div class="field">
             <label for="currentPassword">Current password</label>
             <app-password-input formControlName="currentPassword" inputId="currentPassword" />
           </div>
-          <div class="field">
-            <label for="newPassword">New password</label>
-            <app-password-input formControlName="newPassword" inputId="newPassword" />
-          </div>
-          <div class="field">
-            <label for="confirmPassword">Confirm new password</label>
-            <app-password-input formControlName="confirmPassword" inputId="confirmPassword" />
-            @if (passwordForm.errors?.['mismatch'] && passwordForm.touched) {
-              <span class="field-error">Passwords do not match.</span>
-            }
-          </div>
-          <button type="submit" class="action-btn" [disabled]="isSavingPassword()">
-            {{ isSavingPassword() ? 'Saving…' : 'Update password' }}
-          </button>
-        </form>
-      </section>
-    } @else {
-      <section class="settings-section settings-section--muted">
-        <p>Your account uses Google Sign-In. Password is managed by Google.</p>
-      </section>
-    }
+        }
+        <div class="field">
+          <label for="newPassword">New password</label>
+          <app-password-input formControlName="newPassword" inputId="newPassword" />
+        </div>
+        <div class="field">
+          <label for="confirmPassword">Confirm new password</label>
+          <app-password-input formControlName="confirmPassword" inputId="confirmPassword" />
+          @if (passwordForm.errors?.['mismatch'] && passwordForm.touched) {
+            <span class="field-error">Passwords do not match.</span>
+          }
+        </div>
+        <button type="submit" class="action-btn" [disabled]="isSavingPassword()">
+          {{ isSavingPassword() ? 'Saving…' : 'Update password' }}
+        </button>
+      </form>
+    </section>
   }
 </section>
