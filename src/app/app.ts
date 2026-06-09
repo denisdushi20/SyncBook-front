@@ -3,11 +3,19 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { BookingAlertsHostComponent } from './core/components/booking-alerts-host/booking-alerts-host';
 import { HeaderComponent } from './core/components/header/header';
+import { SupportChatAlertsHostComponent } from './core/components/support-chat-alerts-host/support-chat-alerts-host';
+import { VisitorChatHostComponent } from './core/components/visitor-chat-host/visitor-chat-host';
 import { WeatherService, WeatherForecast } from './core/services/weather.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, BookingAlertsHostComponent],
+  imports: [
+    RouterOutlet,
+    HeaderComponent,
+    BookingAlertsHostComponent,
+    SupportChatAlertsHostComponent,
+    VisitorChatHostComponent
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

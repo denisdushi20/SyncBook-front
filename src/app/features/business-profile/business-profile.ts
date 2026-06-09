@@ -22,6 +22,8 @@ export class BusinessProfileComponent implements OnInit {
   private readonly businessProfileService = inject(BusinessProfileService);
 
   protected readonly isLoading = signal(true);
+  protected readonly isLive = signal(true);
+  protected readonly isTogglingLive = signal(false);
   protected readonly isSavingHours = signal(false);
   protected readonly isSavingService = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
@@ -64,6 +66,34 @@ export class BusinessProfileComponent implements OnInit {
     }
     openTime?.updateValueAndValidity();
     closeTime?.updateValueAndValidity();
+  }
+
+  protected onLiveStatusChange(checked: boolean): void {
+    const previous = this.isLive();
+    if (checked === previous || this.isTogglingLive()) {
+      return;
+    }
+
+    this.isLive.set(checked);
+    this.isTogglingLive.set(true);
+    this.clearMessages();
+
+    this.businessProfileService.updateLiveStatus(checked).subscribe({
+      next: (business) => {
+        this.isLive.set(business.isLive ?? true);
+        this.isTogglingLive.set(false);
+        this.successMessage.set(
+          business.isLive
+            ? 'Your business is now online. Public bookings are open.'
+            : 'Your business is now offline. Public bookings are paused.'
+        );
+      },
+      error: (err) => {
+        this.isLive.set(previous);
+        this.isTogglingLive.set(false);
+        this.errorMessage.set(this.extractError(err));
+      }
+    });
   }
 
   protected saveWorkingHours(): void {
@@ -159,6 +189,7 @@ export class BusinessProfileComponent implements OnInit {
     this.businessProfileService.getMyBusiness().subscribe({
       next: (business) => {
         this.services.set(business.services);
+        this.isLive.set(business.isLive ?? true);
         this.patchWorkingHours(business.workingHours);
         this.isLoading.set(false);
       },

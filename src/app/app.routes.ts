@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { authenticatedRedirectGuard } from './core/guards/authenticated-redirect.guard';
-import { authGuard } from './core/guards/auth.guard';
 import { businessOwnerGuard } from './core/guards/business-owner.guard';
 import { guestGuard } from './core/guards/guest.guard';
 import { pendingRegistrationGuard, verifyEmailGuard } from './core/guards/pending-registration.guard';
@@ -14,10 +13,16 @@ import { CalendarComponent } from './features/dashboard/calendar/calendar';
 import { BusinessProfileComponent } from './features/business-profile/business-profile';
 import { StaffManagementComponent } from './features/staff/staff-management/staff-management';
 import { UserSettingsComponent } from './features/dashboard/user-settings/user-settings';
+import { SubscriptionComponent } from './features/dashboard/subscription/subscription';
 import { AnalyticsDashboardComponent } from './features/dashboard/analytics/analytics-dashboard';
 import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password';
 import { ResetPasswordComponent } from './features/auth/reset-password/reset-password';
 import { VerifyEmailComponent } from './features/auth/verify-email/verify-email';
+import { OnboardingTransitionComponent } from './core/components/onboarding-transition/onboarding-transition';
+import { ChoosePlanComponent } from './features/auth/choose-plan/choose-plan';
+import { PaymentCompleteComponent } from './features/auth/payment-complete/payment-complete';
+import { authGuard } from './core/guards/auth.guard';
+import { paidSubscriptionGuard } from './core/guards/subscription.guard';
 import { BookingComponent } from './features/booking/booking';
 import { BookingDetailComponent } from './features/booking/booking-detail/booking-detail';
 
@@ -40,6 +45,20 @@ export const routes: Routes = [
     canActivate: [guestGuard, pendingRegistrationGuard]
   },
   {
+    path: 'onboarding-transition',
+    component: OnboardingTransitionComponent
+  },
+  {
+    path: 'choose-plan',
+    component: ChoosePlanComponent,
+    canActivate: [authGuard, paidSubscriptionGuard]
+  },
+  {
+    path: 'payment/complete',
+    component: PaymentCompleteComponent,
+    canActivate: [authGuard]
+  },
+  {
     path: 'dashboard',
     component: DashboardLayoutComponent,
     canActivate: [authGuard, businessOwnerGuard],
@@ -49,6 +68,7 @@ export const routes: Routes = [
       { path: 'profile', component: BusinessProfileComponent },
       { path: 'staff', component: StaffManagementComponent },
       { path: 'settings', component: UserSettingsComponent },
+      { path: 'subscription', component: SubscriptionComponent },
       { path: 'analytics', component: AnalyticsDashboardComponent }
     ]
   },

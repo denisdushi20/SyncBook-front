@@ -1,0 +1,128 @@
+<div class="chat-widget" [class.chat-widget--open]="chatOpen()">
+  @if (chatOpen()) {
+    <div class="chat-widget__panel" role="dialog" aria-label="Live support chat">
+      <header class="chat-widget__header">
+        <div class="chat-widget__header-copy">
+          <span>Live Support{{ businessName() ? ' · ' + businessName() : '' }}</span>
+          @if (visitorEmail()) {
+            <span class="chat-widget__identity">{{ visitorEmail() }}</span>
+          }
+          <span
+            class="chat-widget__status"
+            [class.chat-widget__status--connected]="connectionState() === 'connected'"
+            [class.chat-widget__status--error]="connectionState() === 'error'"
+          >
+            {{ connectionLabel() }}
+          </span>
+        </div>
+        <button type="button" class="chat-widget__close" (click)="toggleChat()" aria-label="Close chat">
+          ×
+        </button>
+      </header>
+
+      @if (showBusinessPicker() && businesses().length > 0) {
+        <div class="chat-widget__business-picker">
+          <label for="chatBusinessSelect">Contact business</label>
+          <select id="chatBusinessSelect" [value]="businessId()" (change)="onBusinessSelect($event)">
+            @for (business of businesses(); track business.id) {
+              <option [value]="business.id">{{ business.name }}</option>
+            }
+          </select>
+        </div>
+      }
+
+      @if (!visitorEmail()) {
+        <div class="chat-widget__email-gate">
+          <p class="chat-widget__email-copy">Enter your email so the business owner can identify you.</p>
+          <form class="chat-widget__email-form" (submit)="onEmailGateSubmit($event)">
+            <label class="chat-widget__email-label" for="chatVisitorEmail">Your email</label>
+            <input
+              id="chatVisitorEmail"
+              type="email"
+              class="chat-widget__input"
+              placeholder="you@example.com"
+              autocomplete="email"
+              [value]="emailDraft()"
+              (input)="onEmailDraftInput($any($event.target).value)"
+            />
+            @if (emailError()) {
+              <p class="chat-widget__error">{{ emailError() }}</p>
+            }
+            <button
+              type="submit"
+              class="chat-widget__send chat-widget__send--full"
+              [disabled]="!canContinueWithEmail()"
+            >
+              Continue
+            </button>
+          </form>
+        </div>
+      } @else {
+        <div class="chat-widget__messages">
+          @if (isLoadingHistory()) {
+            <p class="chat-widget__empty">Loading chat history…</p>
+          } @else if (chatMessages().length === 0) {
+            <p class="chat-widget__empty">Ask the business owner a question.</p>
+          }
+          @for (line of chatMessages(); track line.sentAt + line.text) {
+            <div
+              class="chat-widget__bubble"
+              [class.chat-widget__bubble--owner]="line.from === 'owner'"
+              [class.chat-widget__bubble--visitor]="line.from === 'visitor'"
+            >
+              {{ line.text }}
+            </div>
+          }
+        </div>
+
+        @if (chatError()) {
+          <p class="chat-widget__error">{{ chatError() }}</p>
+        }
+
+        @if (connectionError() && connectionState() === 'error') {
+          <p class="chat-widget__error">Chat offline — start the backend with <code>dotnet run</code>.</p>
+        }
+
+        <div class="chat-widget__identity-bar">
+          <button type="button" class="chat-widget__change-email" (click)="changeEmail()">
+            Change email
+          </button>
+        </div>
+
+        <form class="chat-widget__composer" (submit)="onComposerSubmit($event)">
+          <input
+            type="text"
+            class="chat-widget__input"
+            placeholder="Type a message…"
+            [value]="chatDraft()"
+            (input)="onChatDraftInput($any($event.target).value)"
+            [disabled]="isSendingChat() || disabled()"
+          />
+          <button
+            type="submit"
+            class="chat-widget__send"
+            [disabled]="isSendingChat() || disabled() || !chatDraft().trim()"
+          >
+            Send
+          </button>
+        </form>
+      }
+    </div>
+  }
+
+  <button
+    type="button"
+    class="chat-widget__toggle"
+    (click)="toggleChat()"
+    [attr.aria-expanded]="chatOpen()"
+    aria-label="Toggle live support chat"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"
+        fill="currentColor"
+      />
+    </svg>
+    <span class="chat-widget__toggle-label">Chat</span>
+  </button>
+</div>

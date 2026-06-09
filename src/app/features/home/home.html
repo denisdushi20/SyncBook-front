@@ -157,7 +157,7 @@
             <li>Real-time slot sync</li>
             <li>Email notifications</li>
           </ul>
-          <a routerLink="/register" class="btn btn--outline btn--block">Get Started</a>
+          <a routerLink="/register" [queryParams]="{ plan: 'starter' }" class="btn btn--outline btn--block">Get Started</a>
         </article>
 
         <article class="pricing-card pricing-card--featured">
@@ -175,7 +175,7 @@
             <li>Priority SignalR channels</li>
             <li>Custom business hours</li>
           </ul>
-          <a routerLink="/register" class="btn btn--primary btn--block">Get Started</a>
+          <a routerLink="/register" [queryParams]="{ plan: 'professional' }" class="btn btn--primary btn--block">Get Started</a>
         </article>
 
         <article class="pricing-card">

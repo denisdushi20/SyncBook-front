@@ -1,0 +1,15 @@
+<div class="onboarding-transition-overlay" role="status" aria-live="polite">
+  <div class="onboarding-transition-circle">
+    <span class="onboarding-transition-circle__pulse" aria-hidden="true"></span>
+    <span class="onboarding-transition-circle__pulse onboarding-transition-circle__pulse--delayed" aria-hidden="true"></span>
+
+    <div class="onboarding-transition-circle__inner">
+      @if (showSpinner()) {
+        <div class="onboarding-transition-spinner" aria-hidden="true"></div>
+      }
+
+      <h1 class="onboarding-transition-circle__title">{{ title() }}</h1>
+      <p class="onboarding-transition-circle__subtitle">{{ subtitle() }}</p>
+    </div>
+  </div>
+</div>

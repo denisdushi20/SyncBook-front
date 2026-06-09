@@ -207,7 +207,9 @@ export class BusinessOnboardingComponent implements OnInit {
       .subscribe({
         next: () => {
           this.isSubmitting.set(false);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/onboarding-transition'], {
+            queryParams: { phase: 'business-ready' }
+          });
         },
         error: (err) => {
           this.isSubmitting.set(false);
@@ -268,7 +270,9 @@ export class BusinessOnboardingComponent implements OnInit {
             .subscribe({
               next: () => {
                 this.isSubmitting.set(false);
-                this.router.navigate(['/dashboard']);
+                this.router.navigate(['/onboarding-transition'], {
+                  queryParams: { phase: 'business-ready' }
+                });
               },
               error: () => {
                 this.isSubmitting.set(false);

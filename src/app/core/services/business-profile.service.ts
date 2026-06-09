@@ -19,6 +19,12 @@ export class BusinessProfileService {
       .pipe(map((item) => this.normalizeBusiness(item)));
   }
 
+  updateLiveStatus(isLive: boolean): Observable<Business> {
+    return this.http
+      .patch<Record<string, unknown>>('/api/businesses/me/live', { isLive })
+      .pipe(map((item) => this.normalizeBusiness(item)));
+  }
+
   addService(service: Omit<BusinessServiceItem, 'id'>): Observable<Business> {
     return this.http
       .post<Record<string, unknown>>('/api/businesses/me/services', service)
@@ -60,7 +66,8 @@ export class BusinessProfileService {
         isOpen: Boolean(d['isOpen'] ?? d['IsOpen']),
         openTime: (d['openTime'] ?? d['OpenTime']) as string | undefined,
         closeTime: (d['closeTime'] ?? d['CloseTime']) as string | undefined
-      }))
+      })),
+      isLive: (raw['isLive'] ?? raw['IsLive'] ?? true) as boolean
     };
   }
 }

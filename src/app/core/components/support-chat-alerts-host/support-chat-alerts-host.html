@@ -1,0 +1,15 @@
+@if (activeToast(); as toast) {
+  <div class="chat-toast-backdrop" role="presentation" (click)="dismissToast()"></div>
+  <div class="chat-toast" role="alertdialog" aria-label="New support chat message">
+    <p class="chat-toast__eyebrow">New support message</p>
+    <p class="chat-toast__message">{{ toast.message }}</p>
+    <p class="chat-toast__meta">
+      @if (toast.visitorEmail) {
+        {{ toast.visitorEmail }}
+      } @else {
+        Visitor {{ toast.visitorSessionId.slice(0, 6) }}
+      }
+    </p>
+    <button type="button" class="chat-toast__dismiss" (click)="dismissToast()">Dismiss</button>
+  </div>
+}

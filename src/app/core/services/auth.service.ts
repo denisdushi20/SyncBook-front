@@ -14,6 +14,12 @@ export interface AuthUser {
   email: string;
   role: UserRole;
   businessId?: string;
+  subscriptionActive?: boolean;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: AuthUser;
 }
 
 export interface UserProfile extends AuthUser {
@@ -51,11 +57,6 @@ export interface PendingRegistration {
 export interface LoginRequest {
   email: string;
   password: string;
-}
-
-interface AuthResponse {
-  token: string;
-  user: AuthUser;
 }
 
 interface RegisterResponse {
@@ -218,10 +219,24 @@ export class AuthService {
     if (!user) return '/';
 
     if (user.role === 'BusinessOwner') {
-      return user.businessId ? '/dashboard' : '/business-onboarding';
+      if (!user.businessId) return '/business-onboarding';
+      if (!this.hasActiveSubscription()) return '/choose-plan';
+      return '/dashboard';
     }
 
     return '/';
+  }
+
+  hasActiveSubscription(): boolean {
+    const user = this.currentUserSubject.value;
+    if (!user?.businessId) return true;
+    return user.subscriptionActive !== false;
+  }
+
+  persistSession(response: AuthResponse): void {
+    this.clearPendingRegistration();
+    localStorage.setItem(TOKEN_KEY, response.token);
+    this.currentUserSubject.next(response.user);
   }
 
   navigateAfterAuth(): void {
@@ -264,16 +279,15 @@ export class AuthService {
         fullName: decoded.name ?? '',
         email: decoded.email,
         role: decoded.role as UserRole,
-        businessId: decoded.businessId
+        businessId: decoded.businessId,
+        subscriptionActive:
+          decoded.subscriptionActive === undefined
+            ? true
+            : decoded.subscriptionActive === true || decoded.subscriptionActive === 'true'
       };
     } catch {
       return null;
     }
   }
 
-  private persistSession(response: AuthResponse): void {
-    this.clearPendingRegistration();
-    localStorage.setItem(TOKEN_KEY, response.token);
-    this.currentUserSubject.next(response.user);
-  }
 }

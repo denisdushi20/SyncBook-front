@@ -79,8 +79,37 @@
   text-align: center;
 }
 
-.sidebar-footer {
+.sidebar-subscription-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
   margin-top: auto;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+
+  &:hover {
+    background: rgba(16, 185, 129, 0.16);
+    border-color: rgba(16, 185, 129, 0.4);
+  }
+}
+
+.sidebar-subscription-chip__plan {
+  color: var(--color-emerald);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.sidebar-subscription-chip__renewal {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.sidebar-footer {
   padding-top: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -147,6 +176,10 @@
   .sidebar-nav {
     flex: 1;
     flex-direction: row;
+  }
+
+  .sidebar-subscription-chip {
+    display: none;
   }
 
   .sidebar-footer {

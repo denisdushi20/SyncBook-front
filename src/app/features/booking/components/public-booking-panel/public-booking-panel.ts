@@ -6,6 +6,7 @@ import { catchError, debounceTime, switchMap, tap } from 'rxjs/operators';
 import {
   Business,
   BusinessServiceItem,
+  DaySchedule,
   InternalAppointmentSlot
 } from '../../../../core/models/business.models';
 import { PublicBookingAvailabilityHubService } from '../../../../core/services/public-booking-availability-hub.service';
@@ -30,6 +31,8 @@ export class PublicBookingPanelComponent implements OnInit {
 
   protected readonly businesses = signal<Business[]>([]);
   protected readonly services = signal<BusinessServiceItem[]>([]);
+  protected readonly workingHours = signal<DaySchedule[]>([]);
+  protected readonly isBusinessOffline = signal(false);
   protected readonly availableSlots = signal<InternalAppointmentSlot[]>([]);
   protected readonly selectedSlot = signal<InternalAppointmentSlot | null>(null);
   protected readonly isLoadingSlots = signal(false);
@@ -72,6 +75,29 @@ export class PublicBookingPanelComponent implements OnInit {
         }
 
         this.fetchSlots().subscribe();
+      });
+
+    this.availabilityHub.businessConfigChanged$
+      .pipe(takeUntilDestroyed())
+      .subscribe((event) => {
+        const activeBusinessId = this.form.controls.businessId.value;
+        if (!activeBusinessId || event.businessId !== activeBusinessId) {
+          return;
+        }
+
+        this.workingHours.set(event.workingHours);
+        this.fetchSlots().subscribe();
+      });
+
+    this.availabilityHub.businessStatusChanged$
+      .pipe(takeUntilDestroyed())
+      .subscribe((event) => {
+        const activeBusinessId = this.form.controls.businessId.value;
+        if (!activeBusinessId || event.businessId !== activeBusinessId) {
+          return;
+        }
+
+        this.applyBusinessLiveStatus(event.isLive);
       });
   }
 
@@ -123,6 +149,10 @@ export class PublicBookingPanelComponent implements OnInit {
   }
 
   protected onSubmit(): void {
+    if (this.isBusinessOffline()) {
+      return;
+    }
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -173,9 +203,27 @@ export class PublicBookingPanelComponent implements OnInit {
 
   private loadBusiness(id: string): void {
     this.publicBookingService.getBusiness(id).subscribe({
-      next: (business) => this.services.set(business.services),
+      next: (business) => {
+        this.services.set(business.services);
+        this.workingHours.set(business.workingHours);
+        this.applyBusinessLiveStatus(business.isLive ?? true);
+      },
       error: () => this.errorMessage.set('Failed to load business services.')
     });
+  }
+
+  private applyBusinessLiveStatus(isLive: boolean): void {
+    this.isBusinessOffline.set(!isLive);
+
+    if (isLive) {
+      this.form.enable();
+      this.fetchSlots().subscribe();
+      return;
+    }
+
+    this.form.disable();
+    this.selectedSlot.set(null);
+    this.availableSlots.set([]);
   }
 
   private fetchSlots() {

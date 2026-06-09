@@ -42,7 +42,8 @@ export class BusinessService {
         isOpen: Boolean(d['isOpen'] ?? d['IsOpen']),
         openTime: (d['openTime'] ?? d['OpenTime']) as string | undefined,
         closeTime: (d['closeTime'] ?? d['CloseTime']) as string | undefined
-      }))
+      })),
+      isLive: (raw['isLive'] ?? raw['IsLive'] ?? true) as boolean
     };
   }
 }

@@ -48,7 +48,9 @@ export class VerifyEmailComponent implements OnInit {
       next: () => {
         this.authService.setVerifiedEmail(this.email());
         this.isSubmitting.set(false);
-        this.router.navigate(['/business-onboarding']);
+        this.router.navigate(['/onboarding-transition'], {
+          queryParams: { phase: 'account-verified' }
+        });
       },
       error: (err) => {
         this.isSubmitting.set(false);

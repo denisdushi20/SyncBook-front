@@ -1,0 +1,21 @@
+@if (phase() === 'confirming') {
+  <div class="payment-complete-overlay" role="status" aria-live="polite">
+    <div class="payment-complete-card">
+      <div class="payment-complete-spinner" aria-hidden="true"></div>
+      <h1>Confirming payment…</h1>
+      <p>Please wait while we verify your subscription.</p>
+    </div>
+  </div>
+}
+
+@if (phase() === 'error') {
+  <div class="payment-complete-overlay payment-complete-overlay--error" role="alert">
+    <div class="payment-complete-card">
+      <h1>Payment confirmation failed</h1>
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="payment-complete-retry" (click)="retryChoosePlan()">
+        Back to plans
+      </button>
+    </div>
+  </div>
+}

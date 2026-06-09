@@ -1,4 +1,5 @@
 .booking-panel {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -105,6 +106,46 @@
   }
 }
 
+.offline-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(10, 12, 18, 0.88);
+  backdrop-filter: blur(6px);
+  border-radius: inherit;
+  pointer-events: all;
+
+  &__content {
+    text-align: center;
+    max-width: 18rem;
+  }
+
+  &__icon {
+    display: inline-block;
+    font-size: 0.625rem;
+    color: #f87171;
+    margin-bottom: 0.75rem;
+  }
+
+  &__title {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f3f4f6;
+  }
+
+  &__hint {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: #9ca3af;
+    line-height: 1.5;
+  }
+}
+
 .btn-primary {
   display: block;
   width: 100%;
@@ -123,3 +164,4 @@
     cursor: not-allowed;
   }
 }
+

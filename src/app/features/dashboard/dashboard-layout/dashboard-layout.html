@@ -51,13 +51,37 @@
         Team
       </a>
       <a
+        routerLink="/dashboard/subscription"
+        routerLinkActive="sidebar-link--active"
+        class="sidebar-link"
+      >
+        Subscription
+      </a>
+      <a
         routerLink="/dashboard/settings"
         routerLinkActive="sidebar-link--active"
         class="sidebar-link"
       >
         Settings
       </a>
+      <a href="#" class="sidebar-link sidebar-link--chat" (click)="$event.preventDefault()">
+        Live Chat
+        @if ((supportChatService.unreadChatCount$ | async) ?? 0; as chatCount) {
+          @if (chatCount > 0) {
+            <span class="sidebar-badge">{{ chatCount }}</span>
+          }
+        }
+      </a>
     </nav>
+
+    @if (subscriptionSummary(); as summary) {
+      <a routerLink="/dashboard/subscription" class="sidebar-subscription-chip">
+        <span class="sidebar-subscription-chip__plan">{{ summary.planLabel }}</span>
+        @if (summary.renewalLabel) {
+          <span class="sidebar-subscription-chip__renewal">{{ summary.renewalLabel }}</span>
+        }
+      </a>
+    }
 
     @if (authService.currentUser$ | async; as user) {
       <div class="sidebar-footer">
@@ -70,4 +94,6 @@
   <main class="dashboard-main">
     <router-outlet />
   </main>
+
+  <app-live-chat-pane />
 </div>

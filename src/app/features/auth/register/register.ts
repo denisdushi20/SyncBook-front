@@ -1,9 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GoogleSignInComponent } from '../../../core/components/google-sign-in/google-sign-in';
 import { PasswordInputComponent } from '../../../core/components/password-input/password-input';
 import { AuthService } from '../../../core/services/auth.service';
+import { BillingService } from '../../../core/services/billing.service';
 
 @Component({
   selector: 'app-register',
@@ -11,13 +12,22 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './register.html',
   styleUrl: './register.scss'
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly billingService = inject(BillingService);
+  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly isSubmitting = signal(false);
+
+  ngOnInit(): void {
+    const plan = this.route.snapshot.queryParamMap.get('plan');
+    if (plan === 'starter' || plan === 'professional') {
+      this.billingService.setSelectedPlan(plan);
+    }
+  }
 
   protected readonly form = this.fb.nonNullable.group({
     firstName: ['', Validators.required],

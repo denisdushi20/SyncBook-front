@@ -11,6 +11,10 @@ export const businessOwnerGuard: CanActivateFn = () => {
   }
 
   if (authService.isBusinessOwner() && authService.getCurrentUser()?.businessId) {
+    if (!authService.hasActiveSubscription()) {
+      return router.createUrlTree(['/choose-plan']);
+    }
+
     return true;
   }
 

@@ -55,6 +55,7 @@ export interface Business {
   image?: string;
   services: BusinessServiceItem[];
   workingHours: DaySchedule[];
+  isLive?: boolean;
 }
 
 export type AppointmentStatus = 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
@@ -131,3 +132,53 @@ export interface AvailabilityChangedEvent {
   startUtc: string;
   endUtc: string;
 }
+
+export interface BusinessConfigChangedEvent {
+  businessId: string;
+  workingHours: DaySchedule[];
+}
+
+export interface BusinessStatusChangedEvent {
+  businessId: string;
+  isLive: boolean;
+}
+
+export interface VisitorChatMessage {
+  messageId: string;
+  threadId: string;
+  businessId: string;
+  message: string;
+  visitorConnectionId: string;
+  visitorSessionId: string;
+  visitorEmail: string;
+  sentAtUtc: string;
+}
+
+export interface ChatLine {
+  text: string;
+  from: 'visitor' | 'owner';
+  sentAt: string;
+}
+
+export interface SupportChatThreadDto {
+  id: string;
+  businessId: string;
+  visitorSessionId: string;
+  visitorEmail?: string | null;
+  lastVisitorConnectionId?: string;
+  lastMessageAtUtc: string;
+  unreadForOwner: number;
+  lastMessagePreview?: string;
+}
+
+export interface SupportChatMessageDto {
+  id: string;
+  threadId: string;
+  businessId: string;
+  visitorSessionId: string;
+  from: 'Visitor' | 'Owner' | 'visitor' | 'owner';
+  text: string;
+  sentAtUtc: string;
+}
+
+export type HubConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'error';

@@ -14,6 +14,32 @@
   @if (isLoading()) {
     <p class="dashboard-loading">Loading business profile…</p>
   } @else {
+    <section class="dashboard-card live-status-card" [class.live-status-card--offline]="!isLive()">
+      <div class="live-status-card__info">
+        <h2>Booking availability</h2>
+        <p class="live-status-card__hint">
+          @if (isLive()) {
+            Your business is online. Customers can book appointments on your public page.
+          } @else {
+            Your business is offline. The public booking page shows a pause notice.
+          }
+        </p>
+      </div>
+
+      <label class="live-toggle" [class.live-toggle--offline]="!isLive()">
+        <input
+          type="checkbox"
+          [checked]="isLive()"
+          [disabled]="isTogglingLive()"
+          (change)="onLiveStatusChange($any($event.target).checked)"
+        />
+        <span class="live-toggle__track" aria-hidden="true"></span>
+        <span class="live-toggle__label">
+          {{ isTogglingLive() ? 'Updating…' : (isLive() ? 'Online' : 'Offline') }}
+        </span>
+      </label>
+    </section>
+
     <form [formGroup]="hoursForm" (ngSubmit)="saveWorkingHours()" class="dashboard-card">
       <h2>Opening Hours</h2>
 

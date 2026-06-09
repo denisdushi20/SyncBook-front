@@ -1,0 +1,82 @@
+<div class="live-chat" [class.live-chat--open]="isOpen()">
+  @if (isOpen()) {
+    <div class="live-chat__pane" role="dialog" aria-label="Live support chat">
+      <header class="live-chat__header">
+        <span>Live Chat</span>
+        <button type="button" class="live-chat__close" (click)="toggleOpen()" aria-label="Close live chat">
+          ×
+        </button>
+      </header>
+
+      <div class="live-chat__body">
+        @if (threadList().length > 1) {
+          <aside class="live-chat__visitors">
+            @for (thread of threadList(); track thread.threadId) {
+              <button
+                type="button"
+                class="live-chat__visitor"
+                [class.live-chat__visitor--active]="activeThreadId() === thread.threadId"
+                (click)="selectVisitor(thread.threadId)"
+              >
+                <span>{{ thread.label }}</span>
+                @if (thread.unread > 0) {
+                  <span class="live-chat__visitor-badge">{{ thread.unread }}</span>
+                }
+              </button>
+            }
+          </aside>
+        }
+
+        <section class="live-chat__thread">
+          @if (activeThread(); as thread) {
+            <div class="live-chat__messages">
+              @for (line of thread.messages; track line.sentAt + line.text) {
+                <div
+                  class="live-chat__bubble"
+                  [class.live-chat__bubble--owner]="line.from === 'owner'"
+                  [class.live-chat__bubble--visitor]="line.from === 'visitor'"
+                >
+                  <span class="live-chat__bubble-text">{{ line.text }}</span>
+                  <time class="live-chat__bubble-time">{{ line.sentAt | date: 'shortTime' }}</time>
+                </div>
+              }
+            </div>
+
+            @if (sendError()) {
+              <p class="live-chat__error">{{ sendError() }}</p>
+            }
+
+            <form class="live-chat__composer" (submit)="onReplySubmit($event)">
+              <input
+                type="text"
+                class="live-chat__input"
+                placeholder="Reply to visitor…"
+                [value]="replyDraft()"
+                (input)="onReplyDraftInput($any($event.target).value)"
+                [disabled]="isSending()"
+              />
+              <button type="submit" class="live-chat__send" [disabled]="isSending() || !replyDraft().trim()">
+                Send
+              </button>
+            </form>
+          } @else {
+            <p class="live-chat__empty">Waiting for visitor messages…</p>
+          }
+        </section>
+      </div>
+    </div>
+  }
+
+  <button
+    type="button"
+    class="live-chat__toggle"
+    (click)="toggleOpen()"
+    [attr.aria-expanded]="isOpen()"
+    aria-label="Toggle live chat"
+  >
+    Live Chat
+    @if (unreadTotal() > 0) {
+      <span class="live-chat__toggle-badge">{{ unreadTotal() }}</span>
+    }
+  </button>
+</div>

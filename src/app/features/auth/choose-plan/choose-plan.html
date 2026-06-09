@@ -1,0 +1,77 @@
+<div class="choose-plan-page">
+  <div class="choose-plan-container">
+    <header class="choose-plan-header">
+      <p class="eyebrow">One last step</p>
+      <h1>Choose your plan</h1>
+      <p class="section-desc">
+        Pick the plan that fits your business. Every tier unlocks the full SyncBook workspace.
+      </p>
+    </header>
+
+    @if (errorMessage()) {
+      <p class="choose-plan-error" role="alert">{{ errorMessage() }}</p>
+    }
+
+    <div class="pricing-grid">
+      @for (plan of plans(); track plan.id) {
+        <article
+          class="pricing-card"
+          [class.pricing-card--featured]="plan.featured || isHighlighted(plan.id)"
+        >
+          @if (plan.featured) {
+            <span class="pricing-badge">Most Popular</span>
+          }
+
+          <h3>{{ plan.name }}</h3>
+          <p class="pricing-tagline">{{ plan.tagline }}</p>
+
+          <div class="pricing-amount">
+            <span class="price">{{ formatPrice(plan) }}</span>
+            <span class="period">/mo</span>
+          </div>
+
+          <ul class="pricing-features">
+            @for (feature of plan.features; track feature) {
+              <li>{{ feature }}</li>
+            }
+          </ul>
+
+          <button
+            type="button"
+            class="btn"
+            [class.btn--primary]="plan.featured || isHighlighted(plan.id)"
+            [class.btn--outline]="!(plan.featured || isHighlighted(plan.id))"
+            [class.btn--block]="true"
+            [disabled]="loadingPlanId() !== null"
+            (click)="selectPlan(plan.id)"
+          >
+            @if (loadingPlanId() === plan.id) {
+              Redirecting to payment…
+            } @else {
+              Continue to payment
+            }
+          </button>
+        </article>
+      }
+
+      <article class="pricing-card">
+        <h3>Enterprise</h3>
+        <p class="pricing-tagline">For multi-location brands</p>
+
+        <div class="pricing-amount">
+          <span class="price">Custom</span>
+        </div>
+
+        <ul class="pricing-features">
+          <li>Multi-tenant namespaces</li>
+          <li>Dedicated SignalR hub</li>
+          <li>SSO &amp; advanced RBAC</li>
+          <li>SLA &amp; priority support</li>
+          <li>Custom integrations</li>
+        </ul>
+
+        <a href="mailto:sales@syncbook.app" class="btn btn--outline btn--block">Contact Sales</a>
+      </article>
+    </div>
+  </div>
+</div>

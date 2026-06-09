@@ -1,4 +1,13 @@
 <div class="booking-panel" [class.booking-panel--compact]="compact()">
+  @if (isBusinessOffline()) {
+    <div class="offline-overlay" aria-live="polite">
+      <div class="offline-overlay__content">
+        <span class="offline-overlay__icon" aria-hidden="true">●</span>
+        <p class="offline-overlay__title">Business is currently offline</p>
+        <p class="offline-overlay__hint">Booking is temporarily unavailable. Please check back later.</p>
+      </div>
+    </div>
+  }
   @if (errorMessage()) {
     <p class="panel-error">{{ errorMessage() }}</p>
   }

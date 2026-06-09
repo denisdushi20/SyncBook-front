@@ -1,0 +1,77 @@
+.payment-complete-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(6, 24, 20, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.payment-complete-overlay--error {
+  background: rgba(30, 10, 10, 0.78);
+}
+
+.payment-complete-card {
+  width: min(92vw, 24rem);
+  padding: 2.5rem 2rem;
+  border-radius: 20px;
+  background: radial-gradient(circle at 35% 30%, #ecfdf5 0%, #d1fae5 45%, #a7f3d0 100%);
+  border: 2px solid #10b981;
+  text-align: center;
+  box-shadow: 0 24px 64px rgba(5, 150, 105, 0.35);
+
+  h1 {
+    margin: 0 0 0.75rem;
+    font-size: 1.35rem;
+    color: #064e3b;
+  }
+
+  p {
+    margin: 0;
+    color: #047857;
+    line-height: 1.5;
+  }
+}
+
+.payment-complete-overlay--error .payment-complete-card {
+  background: #fff;
+  border-color: #fecaca;
+
+  h1 {
+    color: #991b1b;
+  }
+
+  p {
+    color: #b91c1c;
+  }
+}
+
+.payment-complete-spinner {
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0 auto 1.25rem;
+  border: 3px solid rgba(16, 185, 129, 0.25);
+  border-top-color: #059669;
+  border-radius: 50%;
+  animation: spin 0.85s linear infinite;
+}
+
+.payment-complete-retry {
+  margin-top: 1.25rem;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 999px;
+  background: #059669;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
