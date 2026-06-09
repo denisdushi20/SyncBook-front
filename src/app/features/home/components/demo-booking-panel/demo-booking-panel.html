@@ -1,45 +1,60 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="demo-form">
-  <label class="mock-label">Business</label>
-  <select formControlName="businessId" class="mock-select mock-select--active">
-    @for (business of businesses; track business.id) {
-      <option [value]="business.id">{{ business.name }}</option>
-    }
-  </select>
+  <div class="demo-field">
+    <label class="mock-label" for="demo-business">Business</label>
+    <select id="demo-business" formControlName="businessId" class="mock-select mock-select--active">
+      @for (business of businesses; track business.id) {
+        <option [value]="business.id">{{ business.name }}</option>
+      }
+    </select>
+  </div>
 
-  <label class="mock-label">Service</label>
-  <select formControlName="serviceId" class="mock-select">
-    <option value="" disabled>Select a service</option>
-    @for (service of servicesForSelectedBusiness(); track service.id) {
-      <option [value]="service.id">{{ service.name }}</option>
-    }
-  </select>
+  <div class="demo-field">
+    <label class="mock-label" for="demo-service">Service</label>
+    <select id="demo-service" formControlName="serviceId" class="mock-select">
+      <option value="" disabled>Select a service</option>
+      @for (service of servicesForSelectedBusiness(); track service.id) {
+        <option [value]="service.id">{{ service.name }}</option>
+      }
+    </select>
+  </div>
 
-  <label class="mock-label">Your name</label>
-  <input
-    type="text"
-    formControlName="customerName"
-    class="mock-select"
-    placeholder="Jane Doe"
-  />
+  <div class="demo-field">
+    <label class="mock-label" for="demo-name">Your name</label>
+    <input
+      id="demo-name"
+      type="text"
+      formControlName="customerName"
+      class="mock-select"
+      placeholder="Jane Doe"
+    />
+  </div>
 
   @if (form.controls.serviceId.value) {
-    <label class="mock-label">Available slots</label>
-    <div class="mock-slots">
-      @for (slot of availableSlots(); track slot) {
-        <button
-          type="button"
-          class="mock-slot"
-          [class.mock-slot--active]="selectedSlot() === slot"
-          (click)="selectSlot(slot)"
-        >
-          {{ slot }}
-        </button>
-      }
+    <div class="demo-field">
+      <label class="mock-label">Available slots</label>
+      <div class="mock-slots">
+        @for (slot of availableSlots(); track slot) {
+          <button
+            type="button"
+            class="mock-slot"
+            [class.mock-slot--active]="selectedSlot() === slot"
+            (click)="selectSlot(slot)"
+          >
+            {{ slot }}
+          </button>
+        }
+      </div>
     </div>
   }
 
   @if (successMessage()) {
-    <p class="demo-success">{{ successMessage() }}</p>
+    <div class="demo-success" role="status">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+        <path d="M22 4 12 14.01l-3-3" />
+      </svg>
+      {{ successMessage() }}
+    </div>
   }
 
   <button
@@ -47,6 +62,6 @@
     class="mock-btn"
     [disabled]="!selectedSlot() || form.invalid"
   >
-    Book appointment (demo)
+    Book appointment
   </button>
 </form>

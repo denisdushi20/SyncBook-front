@@ -52,7 +52,8 @@ export class BusinessProfileService {
       services: servicesRaw.map((s) => ({
         id: String(s['id'] ?? s['Id'] ?? ''),
         name: String(s['name'] ?? s['Name'] ?? ''),
-        durationMinutes: (s['durationMinutes'] ?? s['DurationMinutes']) as number | undefined
+        durationMinutes: (s['durationMinutes'] ?? s['DurationMinutes']) as number | undefined,
+        price: (s['price'] ?? s['Price']) as number | undefined
       })),
       workingHours: hoursRaw.map((d) => ({
         day: String(d['day'] ?? d['Day'] ?? ''),

@@ -6,6 +6,7 @@ export interface DemoBookingResult {
   startUtc: string;
   endUtc: string;
   serviceName: string;
+  customerName: string;
   status: 'Pending';
 }
 
@@ -109,11 +110,14 @@ export class DemoBookingPanelComponent {
     );
     const end = new Date(start.getTime() + service.durationMinutes * 60_000);
 
+    const { customerName } = this.form.getRawValue();
+
     const result: DemoBookingResult = {
       id: `demo-${this.nextId++}`,
       startUtc: start.toISOString(),
       endUtc: end.toISOString(),
       serviceName: service.name,
+      customerName,
       status: 'Pending'
     };
 

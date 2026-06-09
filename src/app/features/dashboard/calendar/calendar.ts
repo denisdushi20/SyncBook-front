@@ -1,7 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs';
 import { Appointment, CalendarViewMode } from '../../../core/models/business.models';
+import { AuthService } from '../../../core/services/auth.service';
+import { BookingAlertsHubService } from '../../../core/services/booking-alerts-hub.service';
 import { AppointmentDetailsComponent } from '../components/appointment-details/appointment-details';
 import { CreateAppointmentComponent } from '../components/create-appointment/create-appointment';
 import { AppointmentService } from '../services/appointment.service';
@@ -26,10 +29,14 @@ import {
 })
 export class CalendarComponent {
   private readonly appointmentService = inject(AppointmentService);
+  private readonly bookingAlertsHub = inject(BookingAlertsHubService);
+  private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly liveHandledAppointmentIds = new Set<string>();
 
   protected readonly viewMode = signal<CalendarViewMode>('month');
   protected readonly currentDate = signal(new Date());
+  protected readonly activeRange = signal<{ from: Date; to: Date } | null>(null);
   protected readonly appointments = signal<Appointment[]>([]);
   protected readonly isLoading = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
@@ -52,11 +59,12 @@ export class CalendarComponent {
       const view = this.viewMode();
       const date = this.currentDate();
       const { from, to } = getRangeForView(view, date);
+      this.activeRange.set({ from, to });
 
       this.isLoading.set(true);
       this.errorMessage.set(null);
 
-      this.appointmentService.loadForRange(from, to).subscribe({
+      this.appointmentService.loadAppointments(from, to).subscribe({
         next: () => this.isLoading.set(false),
         error: () => {
           this.isLoading.set(false);
@@ -64,6 +72,33 @@ export class CalendarComponent {
         }
       });
     });
+
+    this.bookingAlertsHub.liveNotification$
+      .pipe(
+        filter((alert) => alert !== null),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((alert) => {
+        if (!alert.appointmentId || this.liveHandledAppointmentIds.has(alert.appointmentId)) {
+          return;
+        }
+
+        this.liveHandledAppointmentIds.add(alert.appointmentId);
+
+        const workspaceBusinessId = this.authService.getCurrentUser()?.businessId;
+        if (!workspaceBusinessId || alert.businessId !== workspaceBusinessId) {
+          return;
+        }
+
+        const range = this.activeRange();
+        if (!range) {
+          return;
+        }
+
+        this.appointmentService
+          .loadAppointments(range.from, range.to, { forceRefresh: true })
+          .subscribe();
+      });
   }
 
   protected rangeLabel(): string {

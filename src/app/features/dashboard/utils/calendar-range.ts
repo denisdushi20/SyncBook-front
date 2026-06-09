@@ -163,10 +163,7 @@ export function getAppointmentsForDay<T extends { startUtc: string; status: stri
   day: Date
 ): T[] {
   return appointments
-    .filter(
-      (appointment) =>
-        isSameWallClockDay(appointment.startUtc, day) && appointment.status !== 'Cancelled'
-    )
+    .filter((appointment) => isSameWallClockDay(appointment.startUtc, day))
     .sort((a, b) => wallClockSortKey(a.startUtc) - wallClockSortKey(b.startUtc));
 }
 

@@ -1,0 +1,334 @@
+<section class="analytics-dashboard">
+
+  <header class="dashboard-page-header analytics-header">
+
+    <div>
+
+      <h1>Insights &amp; Revenue</h1>
+
+      <p>Track bookings, revenue, and service performance over time.</p>
+
+    </div>
+
+
+
+    <div class="range-selector" role="group" aria-label="Date range">
+
+      @for (option of rangeOptions; track option.value) {
+
+        <button
+
+          type="button"
+
+          class="range-btn"
+
+          [class.range-btn--active]="selectedRange() === option.value"
+
+          (click)="selectRange(option.value)"
+
+        >
+
+          {{ option.label }}
+
+        </button>
+
+      }
+
+    </div>
+
+  </header>
+
+
+
+  @if (error$ | async; as error) {
+
+    @if (error) {
+
+      <p class="dashboard-message dashboard-message--error">{{ error }}</p>
+
+    }
+
+  }
+
+
+
+  @if (dashboard$ | async; as dashboard) {
+
+    @if (loading$ | async) {
+
+      <p class="chart-refreshing">Refreshing analytics…</p>
+
+    }
+
+
+
+    @if (dashboard.totalBookings === 0) {
+
+      <p class="dashboard-empty">
+
+        No bookings in this period yet. Once appointments are scheduled, your insights will appear here.
+
+      </p>
+
+    }
+
+
+
+    <div class="kpi-grid">
+
+      <article class="kpi-card">
+
+        <div class="kpi-card__badge kpi-card__badge--currency">$</div>
+
+        <div class="kpi-card__content">
+
+          <span class="kpi-card__label">Total Revenue</span>
+
+          <strong class="kpi-card__value">{{ dashboard.totalRevenue | currency: 'USD' : 'symbol' : '1.0-0' }}</strong>
+
+          @if (dashboard.potentialRevenue > 0) {
+
+            <span class="kpi-card__hint">
+
+              +{{ dashboard.potentialRevenue | currency: 'USD' : 'symbol' : '1.0-0' }} unpaid
+
+            </span>
+
+          }
+
+        </div>
+
+      </article>
+
+
+
+      <article class="kpi-card">
+
+        <div class="kpi-card__badge">
+
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+
+            <path
+
+              d="M8 2v2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H10V2H8zm0 4h8v2H8V6zm0 4h8v8H8v-8z"
+
+              fill="currentColor"
+
+            />
+
+          </svg>
+
+        </div>
+
+        <div class="kpi-card__content">
+
+          <span class="kpi-card__label">Total Bookings</span>
+
+          <strong class="kpi-card__value">{{ dashboard.totalBookings }}</strong>
+
+        </div>
+
+      </article>
+
+
+
+      <article class="kpi-card">
+
+        <div class="kpi-card__badge kpi-card__badge--currency">$</div>
+
+        <div class="kpi-card__content">
+
+          <span class="kpi-card__label">Average Order Value</span>
+
+          <strong class="kpi-card__value">{{ dashboard.averageOrderValue | currency: 'USD' : 'symbol' : '1.0-2' }}</strong>
+
+        </div>
+
+      </article>
+
+
+
+      <article class="kpi-card">
+
+        <div class="kpi-card__badge kpi-card__badge--percent">%</div>
+
+        <div class="kpi-card__content">
+
+          <span class="kpi-card__label">Booking Fulfillment Rate</span>
+
+          <strong class="kpi-card__value">{{ dashboard.bookingFulfillmentRatePercent | number: '1.0-1' }}%</strong>
+
+        </div>
+
+      </article>
+
+    </div>
+
+
+
+    <div class="status-breakdown dashboard-card">
+
+      <h2>Booking Status Breakdown</h2>
+
+      <div class="status-bars">
+
+        <div class="status-bar">
+
+          <span class="status-bar__label">Paid</span>
+
+          <div class="status-bar__track">
+
+            <div class="status-bar__fill status-bar__fill--completed" [style.width.%]="dashboard.bookingStats.completedPercent"></div>
+
+          </div>
+
+          <span class="status-bar__value">{{ dashboard.bookingStats.completedPercent | number: '1.0-1' }}%</span>
+
+        </div>
+
+        <div class="status-bar">
+
+          <span class="status-bar__label">Confirmed</span>
+
+          <div class="status-bar__track">
+
+            <div class="status-bar__fill status-bar__fill--confirmed" [style.width.%]="dashboard.bookingStats.confirmedPercent"></div>
+
+          </div>
+
+          <span class="status-bar__value">{{ dashboard.bookingStats.confirmedPercent | number: '1.0-1' }}%</span>
+
+        </div>
+
+        <div class="status-bar">
+
+          <span class="status-bar__label">Pending</span>
+
+          <div class="status-bar__track">
+
+            <div class="status-bar__fill status-bar__fill--pending" [style.width.%]="dashboard.bookingStats.pendingPercent"></div>
+
+          </div>
+
+          <span class="status-bar__value">{{ dashboard.bookingStats.pendingPercent | number: '1.0-1' }}%</span>
+
+        </div>
+
+        <div class="status-bar">
+
+          <span class="status-bar__label">Cancelled</span>
+
+          <div class="status-bar__track">
+
+            <div class="status-bar__fill status-bar__fill--cancelled" [style.width.%]="dashboard.bookingStats.cancelledPercent"></div>
+
+          </div>
+
+          <span class="status-bar__value">{{ dashboard.bookingStats.cancelledPercent | number: '1.0-1' }}%</span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="charts-grid">
+
+      <article class="dashboard-card chart-card">
+
+        <div class="chart-card__header">
+          <div>
+            <h2>Booking Trends</h2>
+            <p class="chart-subtitle">{{ trendsChartSubtitle(dashboard) }}</p>
+          </div>
+          @if (dashboard.range === 'month') {
+            <div class="month-nav" role="group" aria-label="Browse months">
+              <button type="button" class="month-nav__btn" (click)="shiftTrendMonth(-1)" aria-label="Previous month">‹</button>
+              <span class="month-nav__label">{{ monthNavigatorLabel() }}</span>
+              <button type="button" class="month-nav__btn" (click)="shiftTrendMonth(1)" aria-label="Next month">›</button>
+            </div>
+          }
+        </div>
+
+        <div class="chart-container">
+
+          <canvas #trendsCanvas aria-label="Daily booking trends chart"></canvas>
+
+        </div>
+
+      </article>
+
+
+
+      <article class="dashboard-card chart-card">
+
+        <h2>Revenue by Service</h2>
+
+        @if (dashboard.topPerformingServices.length === 0) {
+
+          <p class="chart-empty">
+
+            No paid bookings yet. Mark appointments as paid to see revenue by service.
+
+          </p>
+
+        } @else {
+
+          <div class="chart-container chart-container--doughnut">
+
+            <canvas #revenueCanvas aria-label="Revenue distribution by service chart"></canvas>
+
+          </div>
+
+        }
+
+      </article>
+
+    </div>
+
+
+
+    @if (dashboard.topPerformingServices.length > 0) {
+
+      <section class="dashboard-card top-services">
+
+        <h2>Top Performing Services</h2>
+
+        <ul class="top-services__list">
+
+          @for (service of dashboard.topPerformingServices; track service.serviceId; let i = $index) {
+
+            <li class="top-services__item">
+
+              <span class="top-services__rank">{{ i + 1 }}</span>
+
+              <div class="top-services__info">
+
+                <strong>{{ service.serviceName }}</strong>
+
+                <span>{{ service.bookingCount }} bookings</span>
+
+              </div>
+
+              <span class="top-services__revenue">{{ service.revenue | currency: 'USD' : 'symbol' : '1.0-2' }}</span>
+
+            </li>
+
+          }
+
+        </ul>
+
+      </section>
+
+    }
+
+  } @else if (loading$ | async) {
+
+    <p class="dashboard-loading">Loading analytics…</p>
+
+  }
+
+</section>
+

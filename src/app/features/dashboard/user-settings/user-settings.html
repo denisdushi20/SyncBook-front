@@ -1,72 +1,103 @@
-<section class="user-settings">
-  <header class="settings-header">
-    <h1>Account Settings</h1>
-    <p>View your profile and manage your account security.</p>
-  </header>
-
-  @if (isLoading()) {
-    <p class="loading">Loading account…</p>
-  } @else if (loadError()) {
-    <p class="message message--error">{{ loadError() }}</p>
-  } @else if (profile(); as user) {
-    <section class="settings-section">
-      <h2>Profile</h2>
-      <dl class="info-list">
-        <div class="info-row">
-          <dt>Full name</dt>
-          <dd>{{ user.fullName }}</dd>
-        </div>
-        <div class="info-row">
-          <dt>Email</dt>
-          <dd>{{ user.email }}</dd>
-        </div>
-        <div class="info-row">
-          <dt>Role</dt>
-          <dd>{{ user.role }}</dd>
-        </div>
-        <div class="info-row">
-          <dt>Sign-in method</dt>
-          <dd>{{ providerLabel(user.authProvider) }}</dd>
-        </div>
-      </dl>
-    </section>
-
-    <section class="settings-section">
-      <h2>Change Password</h2>
-
-      @if (isGoogleAccount()) {
-        <p class="settings-hint">Set a password to also sign in with email and password.</p>
-      }
-
-      @if (passwordMessage()) {
-        <p class="message message--success">{{ passwordMessage() }}</p>
-      }
-      @if (passwordError()) {
-        <p class="message message--error">{{ passwordError() }}</p>
-      }
-
-      <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
-        @if (isLocalAccount()) {
-          <div class="field">
-            <label for="currentPassword">Current password</label>
-            <app-password-input formControlName="currentPassword" inputId="currentPassword" />
-          </div>
-        }
-        <div class="field">
-          <label for="newPassword">New password</label>
-          <app-password-input formControlName="newPassword" inputId="newPassword" />
-        </div>
-        <div class="field">
-          <label for="confirmPassword">Confirm new password</label>
-          <app-password-input formControlName="confirmPassword" inputId="confirmPassword" />
-          @if (passwordForm.errors?.['mismatch'] && passwordForm.touched) {
-            <span class="field-error">Passwords do not match.</span>
-          }
-        </div>
-        <button type="submit" class="action-btn" [disabled]="isSavingPassword()">
-          {{ isSavingPassword() ? 'Saving…' : 'Update password' }}
-        </button>
-      </form>
-    </section>
-  }
-</section>
+<section class="user-settings">
+  <header class="dashboard-page-header">
+    <h1>Account Settings</h1>
+    <p>Manage your profile and account security.</p>
+  </header>
+
+  @if (isLoading()) {
+    <p class="dashboard-loading">Loading account…</p>
+  } @else if (loadError()) {
+    <p class="dashboard-message dashboard-message--error">{{ loadError() }}</p>
+  } @else if (profile(); as user) {
+    <div class="settings-grid">
+      <section class="dashboard-card">
+        <h2>Profile</h2>
+
+        @if (profileMessage()) {
+          <p class="dashboard-message dashboard-message--success">{{ profileMessage() }}</p>
+        }
+        @if (profileError()) {
+          <p class="dashboard-message dashboard-message--error">{{ profileError() }}</p>
+        }
+
+        <form [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
+          <div class="field-row">
+            <div class="field">
+              <label for="firstName">First name</label>
+              <input id="firstName" type="text" formControlName="firstName" />
+              @if (profileForm.controls.firstName.touched && profileForm.controls.firstName.errors?.['required']) {
+                <span class="field-error">First name is required.</span>
+              }
+            </div>
+            <div class="field">
+              <label for="lastName">Last name</label>
+              <input id="lastName" type="text" formControlName="lastName" />
+              @if (profileForm.controls.lastName.touched && profileForm.controls.lastName.errors?.['required']) {
+                <span class="field-error">Last name is required.</span>
+              }
+            </div>
+          </div>
+          <button type="submit" class="action-btn" [disabled]="isSavingProfile()">
+            {{ isSavingProfile() ? 'Saving…' : 'Save profile' }}
+          </button>
+        </form>
+      </section>
+
+      <section class="dashboard-card">
+        <h2>Account info</h2>
+        <dl class="info-list">
+          <div class="info-row">
+            <dt>Email</dt>
+            <dd>{{ user.email }}</dd>
+          </div>
+          <div class="info-row">
+            <dt>Role</dt>
+            <dd>{{ user.role }}</dd>
+          </div>
+          <div class="info-row">
+            <dt>Sign-in method</dt>
+            <dd>{{ providerLabel(user.authProvider) }}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="dashboard-card settings-card--wide">
+        <h2>Security</h2>
+
+        @if (isGoogleAccount()) {
+          <p class="settings-hint">Set a password to also sign in with email and password.</p>
+        }
+
+        @if (passwordMessage()) {
+          <p class="dashboard-message dashboard-message--success">{{ passwordMessage() }}</p>
+        }
+        @if (passwordError()) {
+          <p class="dashboard-message dashboard-message--error">{{ passwordError() }}</p>
+        }
+
+        <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="password-form">
+          @if (isLocalAccount()) {
+            <div class="field">
+              <label for="currentPassword">Current password</label>
+              <app-password-input formControlName="currentPassword" inputId="currentPassword" />
+            </div>
+          }
+          <div class="field">
+            <label for="newPassword">New password</label>
+            <app-password-input formControlName="newPassword" inputId="newPassword" />
+          </div>
+          <div class="field">
+            <label for="confirmPassword">Confirm new password</label>
+            <app-password-input formControlName="confirmPassword" inputId="confirmPassword" />
+            @if (passwordForm.errors?.['mismatch'] && passwordForm.touched) {
+              <span class="field-error">Passwords do not match.</span>
+            }
+          </div>
+          <button type="submit" class="action-btn" [disabled]="isSavingPassword()">
+            {{ isSavingPassword() ? 'Saving…' : 'Update password' }}
+          </button>
+        </form>
+      </section>
+    </div>
+  }
+</section>

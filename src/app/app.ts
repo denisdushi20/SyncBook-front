@@ -1,12 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
+import { BookingAlertsHostComponent } from './core/components/booking-alerts-host/booking-alerts-host';
 import { HeaderComponent } from './core/components/header/header';
 import { WeatherService, WeatherForecast } from './core/services/weather.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent],
+  imports: [RouterOutlet, HeaderComponent, BookingAlertsHostComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

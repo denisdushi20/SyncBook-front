@@ -1,0 +1,242 @@
+@mixin dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.dashboard-page-header {
+  h1 {
+    margin: 0 0 0.5rem;
+    color: var(--color-slate, #1e293b);
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+}
+
+.dashboard-loading {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.dashboard-message {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+
+  &--error {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+  }
+
+  &--success {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+}
+
+.dashboard-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+
+  h2 {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-slate, #1e293b);
+  }
+
+  h3 {
+    margin: 0 0 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #334155;
+  }
+}
+
+.dashboard-empty {
+  margin: 0;
+  padding: 1.25rem;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.action-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.25rem;
+  background: var(--color-emerald, #0f766e);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover:not(:disabled) {
+    background: #0d9488;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.secondary-btn {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.6rem 1.25rem;
+  background: #fff;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: #f8fafc;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.link-btn {
+  border: none;
+  background: transparent;
+  color: var(--color-emerald, #0f766e);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+
+  &:hover {
+    background: #ecfdf5;
+  }
+
+  &--danger {
+    color: #dc2626;
+
+    &:hover {
+      background: #fef2f2;
+    }
+  }
+}
+
+.hours-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.hours-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.day-label {
+  min-width: 100px;
+  font-weight: 500;
+  color: #334155;
+  font-size: 0.875rem;
+}
+
+.time-input {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.875rem;
+  color: #334155;
+}
+
+.time-sep {
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+
+.closed-label {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &--bookable {
+    background: #d1fae5;
+    color: #047857;
+  }
+
+  &--unavailable {
+    background: #f1f5f9;
+    color: #64748b;
+  }
+
+  &--owner {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #475569;
+  }
+
+  input[type='text'],
+  input[type='email'],
+  input[type='number'] {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.9rem;
+    color: #1e293b;
+
+    &:focus {
+      outline: 2px solid rgba(15, 118, 110, 0.25);
+      border-color: var(--color-emerald, #0f766e);
+    }
+  }
+}
+
+.field-error {
+  font-size: 0.75rem;
+  color: #dc2626;
+}

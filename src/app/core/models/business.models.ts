@@ -2,6 +2,7 @@ export interface BusinessServiceItem {
   id?: string;
   name: string;
   durationMinutes?: number;
+  price?: number;
 }
 
 export interface DaySchedule {
@@ -32,6 +33,18 @@ export interface UpdateMyStaffProfilePayload {
   weeklySchedule: StaffWeeklyScheduleEntry[];
 }
 
+export interface CreateStaffPayload {
+  fullName: string;
+  isBookable?: boolean;
+  weeklySchedule?: StaffWeeklyScheduleEntry[];
+}
+
+export interface UpdateStaffPayload {
+  fullName: string;
+  isBookable: boolean;
+  weeklySchedule: StaffWeeklyScheduleEntry[];
+}
+
 export interface Business {
   id: string;
   name: string;
@@ -44,7 +57,7 @@ export interface Business {
   workingHours: DaySchedule[];
 }
 
-export type AppointmentStatus = 'Pending' | 'Confirmed' | 'Cancelled';
+export type AppointmentStatus = 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
 
 export interface Appointment {
   id: string;
@@ -54,6 +67,7 @@ export interface Appointment {
   customerPhone?: string;
   serviceId?: string;
   serviceName: string;
+  servicePrice?: number;
   startUtc: string;
   endUtc: string;
   bufferMinutes?: number;
@@ -99,3 +113,21 @@ export interface TodayAppointmentSummary {
 }
 
 export type CalendarViewMode = 'month' | 'week' | 'day';
+
+export interface NewBookingAlert {
+  notificationId: string;
+  appointmentId: string;
+  businessId: string;
+  customerName: string;
+  serviceId: string;
+  serviceName: string;
+  startUtc: string;
+  endUtc: string;
+  source: 'PublicForm' | string;
+}
+
+export interface AvailabilityChangedEvent {
+  businessId: string;
+  startUtc: string;
+  endUtc: string;
+}

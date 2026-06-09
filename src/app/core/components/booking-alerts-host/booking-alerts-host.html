@@ -1,0 +1,60 @@
+@if (isOwner() && activeToast(); as toast) {
+  <div
+    class="booking-alert-overlay"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="booking-alert-title"
+    aria-describedby="booking-alert-detail"
+  >
+    <div class="booking-alert-circle">
+      <div class="booking-alert-circle__pulse" aria-hidden="true"></div>
+      <div class="booking-alert-circle__pulse booking-alert-circle__pulse--delayed" aria-hidden="true"></div>
+
+      <div class="booking-alert-circle__inner">
+        <span class="booking-alert-circle__badge" aria-hidden="true">!</span>
+        <h2 id="booking-alert-title" class="booking-alert-circle__title">
+          You have a new booking request
+        </h2>
+        <p id="booking-alert-detail" class="booking-alert-circle__detail">
+          <strong>{{ toast.customerName }}</strong>
+          booked <strong>{{ toast.serviceName }}</strong>
+          <span class="booking-alert-circle__time">{{ toast.startUtc | date: 'medium' }}</span>
+        </p>
+
+        @if (actionError()) {
+          <p class="booking-alert-circle__error">{{ actionError() }}</p>
+        }
+
+        <div class="booking-alert-circle__actions">
+          <button
+            type="button"
+            class="booking-alert-circle__confirm"
+            [disabled]="isConfirming() || isRejecting()"
+            (click)="confirmBooking()"
+          >
+            {{ isConfirming() ? 'Confirming…' : 'Confirm' }}
+          </button>
+          <button
+            type="button"
+            class="booking-alert-circle__reject"
+            [disabled]="isConfirming() || isRejecting()"
+            (click)="rejectBooking()"
+          >
+            {{ isRejecting() ? 'Rejecting…' : 'Reject' }}
+          </button>
+        </div>
+
+        <a
+          routerLink="/dashboard/calendar"
+          class="booking-alert-circle__calendar"
+          (click)="dismissAlert()"
+        >
+          View in calendar
+        </a>
+        <button type="button" class="booking-alert-circle__dismiss" (click)="dismissAlert()">
+          Dismiss
+        </button>
+      </div>
+    </div>
+  </div>
+}

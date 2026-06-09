@@ -26,7 +26,12 @@
       }
       <div class="details-row">
         <dt>Service</dt>
-        <dd>{{ appointment().serviceName }}</dd>
+        <dd>
+          {{ appointment().serviceName }}
+          @if (appointment().servicePrice != null) {
+            <span class="service-price-tag">${{ appointment().servicePrice }}</span>
+          }
+        </dd>
       </div>
       @if (appointment().staffName) {
         <div class="details-row">
@@ -46,7 +51,7 @@
         <dt>Status</dt>
         <dd>
           <span class="status-badge status-badge--{{ appointment().status.toLowerCase() }}">
-            {{ appointment().status }}
+            {{ formatStatus(appointment().status) }}
           </span>
         </dd>
       </div>
@@ -57,10 +62,28 @@
         <button
           type="button"
           class="btn-primary"
-          [disabled]="isConfirming()"
+          [disabled]="isConfirming() || isRejecting()"
           (click)="confirmAppointment()"
         >
           {{ isConfirming() ? 'Confirming…' : 'Mark as Confirmed' }}
+        </button>
+        <button
+          type="button"
+          class="btn-danger"
+          [disabled]="isConfirming() || isRejecting()"
+          (click)="rejectAppointment()"
+        >
+          {{ isRejecting() ? 'Rejecting…' : 'Reject' }}
+        </button>
+      }
+      @if (appointment().status === 'Confirmed') {
+        <button
+          type="button"
+          class="btn-primary btn-primary--paid"
+          [disabled]="isMarkingPaid()"
+          (click)="markAsPaid()"
+        >
+          {{ isMarkingPaid() ? 'Processing…' : 'Mark as Paid' }}
         </button>
       }
       <button type="button" class="btn-secondary" (click)="closed.emit()">Close</button>

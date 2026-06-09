@@ -14,6 +14,7 @@ import { CalendarComponent } from './features/dashboard/calendar/calendar';
 import { BusinessProfileComponent } from './features/business-profile/business-profile';
 import { StaffManagementComponent } from './features/staff/staff-management/staff-management';
 import { UserSettingsComponent } from './features/dashboard/user-settings/user-settings';
+import { AnalyticsDashboardComponent } from './features/dashboard/analytics/analytics-dashboard';
 import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password';
 import { ResetPasswordComponent } from './features/auth/reset-password/reset-password';
 import { VerifyEmailComponent } from './features/auth/verify-email/verify-email';
@@ -47,7 +48,8 @@ export const routes: Routes = [
       { path: 'calendar', component: CalendarComponent },
       { path: 'profile', component: BusinessProfileComponent },
       { path: 'staff', component: StaffManagementComponent },
-      { path: 'settings', component: UserSettingsComponent }
+      { path: 'settings', component: UserSettingsComponent },
+      { path: 'analytics', component: AnalyticsDashboardComponent }
     ]
   },
   { path: '**', redirectTo: '' }

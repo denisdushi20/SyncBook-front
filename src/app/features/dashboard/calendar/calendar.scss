@@ -286,6 +286,7 @@
 }
 
 .appt-chip {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
@@ -309,10 +310,47 @@
     color: #065f46;
   }
 
+  &--completed {
+    background: #a7f3d0;
+    color: #047857;
+  }
+
   &--cancelled {
     background: #fee2e2;
     color: #991b1b;
+    border: 1px dashed #f87171;
   }
+
+  &--rejected {
+    opacity: 0.85;
+    padding-right: 1.15rem;
+
+    .appt-chip__time,
+    .appt-chip__title,
+    .appt-chip__meta {
+      text-decoration: line-through;
+      text-decoration-color: rgba(153, 27, 27, 0.55);
+    }
+  }
+}
+
+.appt-chip__reject {
+  position: absolute;
+  top: 1px;
+  right: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 1px 3px rgba(220, 38, 38, 0.35);
+  pointer-events: none;
 }
 
 .appt-chip__time {

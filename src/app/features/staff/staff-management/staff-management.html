@@ -1,60 +1,152 @@
 <section class="staff-management">
-  <header class="profile-header">
-    <h1>Staff Schedule</h1>
-    <p>Manage your bookable status and weekly working hours.</p>
+  <header class="dashboard-page-header">
+    <h1>Team</h1>
+    <p>Manage your staff roster and working hours. Multiple bookable staff can accept bookings at the same time.</p>
   </header>
 
   @if (errorMessage()) {
-    <p class="message message--error">{{ errorMessage() }}</p>
+    <p class="dashboard-message dashboard-message--error">{{ errorMessage() }}</p>
   }
   @if (successMessage()) {
-    <p class="message message--success">{{ successMessage() }}</p>
+    <p class="dashboard-message dashboard-message--success">{{ successMessage() }}</p>
   }
 
   @if (isLoading()) {
-    <p class="loading">Loading staff profile…</p>
+    <p class="dashboard-loading">Loading team…</p>
   } @else {
-    <form [formGroup]="scheduleForm" (ngSubmit)="saveSchedule()" class="profile-section">
-      @if (staffName()) {
-        <p class="staff-name">Profile: <strong>{{ staffName() }}</strong></p>
-      }
-
-      <label class="bookable-toggle">
-        <input type="checkbox" formControlName="isBookable" />
-        Available for bookings
-      </label>
-      <p class="hint">
-        When disabled, you will not appear in the staff picker and cannot receive new appointments.
-      </p>
-
-      <h2>Weekly Shift Hours</h2>
-
-      <div formArrayName="weeklySchedule" class="hours-list">
-        @for (day of weeklySchedule.controls; track $index) {
-          <div class="hours-row" [formGroupName]="$index">
-            <span class="day-label">{{ day.get('dayOfWeek')?.value }}</span>
-            <label class="open-toggle">
-              <input
-                type="checkbox"
-                formControlName="isAvailable"
-                (change)="onDayAvailableChange($index)"
-              />
-              Available
-            </label>
-            @if (day.get('isAvailable')?.value) {
-              <input type="time" formControlName="startTime" class="time-input" />
-              <span class="time-sep">to</span>
-              <input type="time" formControlName="endTime" class="time-input" />
-            } @else {
-              <span class="closed-label">Unavailable</span>
-            }
+    <div class="staff-layout">
+      <div class="staff-layout__roster">
+        <section class="dashboard-card">
+          <div class="card-header">
+            <h2>Team members</h2>
+            <button type="button" class="secondary-btn" (click)="startAddStaff()">Add staff</button>
           </div>
-        }
+
+          @if (staffList().length === 0) {
+            <p class="dashboard-empty">
+              No team members yet. Add staff to enable concurrent bookings at the same time slot.
+            </p>
+          } @else if (staffList().length === 1) {
+            <p class="roster-hint">
+              You have one team member. Add another to accept two bookings at the same time.
+            </p>
+          }
+
+          <ul class="staff-roster">
+            @for (staff of staffList(); track staff.id) {
+              <li
+                class="staff-roster__item"
+                [class.staff-roster__item--selected]="selectedStaffId() === staff.id"
+              >
+                <button type="button" class="staff-roster__select" (click)="selectStaff(staff)">
+                  <div class="staff-roster__info">
+                    <strong>{{ staff.fullName }}</strong>
+                    <span class="staff-roster__hours">{{ hoursSummary(staff) }}</span>
+                  </div>
+                  <div class="staff-roster__badges">
+                    @if (isOwnerStaff(staff)) {
+                      <span class="status-chip status-chip--owner">Owner</span>
+                    }
+                    <span
+                      class="status-chip"
+                      [class.status-chip--bookable]="staff.isBookable"
+                      [class.status-chip--unavailable]="!staff.isBookable"
+                    >
+                      {{ staff.isBookable ? 'Bookable' : 'Not bookable' }}
+                    </span>
+                  </div>
+                </button>
+                @if (!isOwnerStaff(staff)) {
+                  <button
+                    type="button"
+                    class="link-btn link-btn--danger staff-roster__remove"
+                    (click)="removeStaff(staff)"
+                  >
+                    Remove
+                  </button>
+                }
+              </li>
+            }
+          </ul>
+        </section>
+
+        <section class="dashboard-card">
+          <h2>Add team member</h2>
+          <form [formGroup]="addForm" (ngSubmit)="addStaff()" class="add-form">
+            <div class="field">
+              <label for="newStaffName">Full name</label>
+              <input id="newStaffName" type="text" formControlName="fullName" placeholder="e.g. Alex Smith" />
+              @if (addForm.controls.fullName.touched && addForm.controls.fullName.errors?.['required']) {
+                <span class="field-error">Name is required.</span>
+              }
+            </div>
+            <p class="form-hint">New staff will inherit your business opening hours as their schedule.</p>
+            <button type="submit" class="action-btn" [disabled]="isAdding()">
+              {{ isAdding() ? 'Adding…' : 'Add staff member' }}
+            </button>
+          </form>
+        </section>
       </div>
 
-      <button type="submit" class="action-btn" [disabled]="isSaving()">
-        {{ isSaving() ? 'Saving…' : 'Save Schedule' }}
-      </button>
-    </form>
+      <div class="staff-layout__editor">
+        @if (selectedStaff(); as staff) {
+          <section class="dashboard-card">
+            <div class="card-header">
+              <h2>Edit — {{ staff.fullName }}</h2>
+              <button type="button" class="secondary-btn" (click)="copyBusinessHours()">
+                Copy business hours
+              </button>
+            </div>
+
+            <form [formGroup]="editForm" (ngSubmit)="saveSelectedStaff()">
+              <div class="field">
+                <label for="editStaffName">Full name</label>
+                <input id="editStaffName" type="text" formControlName="fullName" />
+              </div>
+
+              <label class="bookable-toggle">
+                <input type="checkbox" formControlName="isBookable" />
+                Available for bookings
+              </label>
+              <p class="form-hint">
+                When disabled, this person will not receive new appointments.
+              </p>
+
+              <h3>Weekly shift hours</h3>
+              <div formArrayName="weeklySchedule" class="hours-list">
+                @for (day of editWeeklySchedule.controls; track $index) {
+                  <div class="hours-row" [formGroupName]="$index">
+                    <span class="day-label">{{ day.get('dayOfWeek')?.value }}</span>
+                    <label class="open-toggle">
+                      <input
+                        type="checkbox"
+                        formControlName="isAvailable"
+                        (change)="onDayAvailableChange($index)"
+                      />
+                      Available
+                    </label>
+                    @if (day.get('isAvailable')?.value) {
+                      <input type="time" formControlName="startTime" class="time-input" />
+                      <span class="time-sep">to</span>
+                      <input type="time" formControlName="endTime" class="time-input" />
+                    } @else {
+                      <span class="closed-label">Unavailable</span>
+                    }
+                  </div>
+                }
+              </div>
+
+              <button type="submit" class="action-btn" [disabled]="isSaving()">
+                {{ isSaving() ? 'Saving…' : 'Save changes' }}
+              </button>
+            </form>
+          </section>
+        } @else {
+          <section class="dashboard-card">
+            <p class="dashboard-empty">Select a team member to edit their schedule, or add a new one.</p>
+          </section>
+        }
+      </div>
+    </div>
   }
 </section>

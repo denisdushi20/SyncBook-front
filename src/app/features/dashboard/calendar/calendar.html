@@ -94,8 +94,12 @@
                   <div
                     class="appt-chip"
                     [class]="statusClass(appt.status)"
+                    [class.appt-chip--rejected]="appt.status === 'Cancelled'"
                     (click)="openDetails(appt); $event.stopPropagation()"
                   >
+                    @if (appt.status === 'Cancelled') {
+                      <span class="appt-chip__reject" aria-label="Rejected">×</span>
+                    }
                     <span class="appt-chip__time">{{ formatTime(appt.startUtc) }}</span>
                     <span class="appt-chip__title">{{ appt.serviceName }}</span>
                   </div>
@@ -138,8 +142,12 @@
                   <div
                     class="appt-chip appt-chip--block"
                     [class]="statusClass(appt.status)"
+                    [class.appt-chip--rejected]="appt.status === 'Cancelled'"
                     (click)="openDetails(appt); $event.stopPropagation()"
                   >
+                    @if (appt.status === 'Cancelled') {
+                      <span class="appt-chip__reject" aria-label="Rejected">×</span>
+                    }
                     <span class="appt-chip__time">{{ formatTime(appt.startUtc) }}</span>
                     <span class="appt-chip__title">{{ appt.serviceName }}</span>
                     <span class="appt-chip__meta">{{ appt.customerName }}</span>
@@ -167,8 +175,12 @@
                 <div
                   class="appt-chip appt-chip--block"
                   [class]="statusClass(appt.status)"
+                  [class.appt-chip--rejected]="appt.status === 'Cancelled'"
                   (click)="openDetails(appt); $event.stopPropagation()"
                 >
+                  @if (appt.status === 'Cancelled') {
+                    <span class="appt-chip__reject" aria-label="Rejected">×</span>
+                  }
                   <span class="appt-chip__time">{{ formatTime(appt.startUtc) }}</span>
                   <span class="appt-chip__title">{{ appt.serviceName }}</span>
                   <span class="appt-chip__meta">{{ appt.customerName }}</span>

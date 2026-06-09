@@ -51,13 +51,21 @@
 
 .section-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 1rem;
 
   h2 {
     margin: 0;
   }
+}
+
+.section-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.4;
 }
 
 .add-btn {
@@ -77,7 +85,7 @@
 
 .service-row {
   display: grid;
-  grid-template-columns: 1fr 120px auto;
+  grid-template-columns: 1fr 120px 100px auto;
   gap: 0.75rem;
   align-items: start;
   margin-bottom: 0.75rem;

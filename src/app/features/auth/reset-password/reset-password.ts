@@ -1,13 +1,12 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { OtpInputComponent } from '../../../core/components/otp-input/otp-input';
 import { PasswordInputComponent } from '../../../core/components/password-input/password-input';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-reset-password',
-  imports: [ReactiveFormsModule, RouterLink, OtpInputComponent, PasswordInputComponent],
+  imports: [ReactiveFormsModule, RouterLink, PasswordInputComponent],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.scss'
 })
@@ -17,15 +16,14 @@ export class ResetPasswordComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
-  protected readonly email = signal('');
+  protected readonly token = signal('');
   protected readonly isSubmitting = signal(false);
-  protected readonly isResending = signal(false);
+  protected readonly isValidating = signal(true);
+  protected readonly tokenValid = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
-  protected readonly infoMessage = signal<string | null>(null);
 
   protected readonly form = this.fb.nonNullable.group(
     {
-      code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required]
     },
@@ -33,17 +31,29 @@ export class ResetPasswordComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    const email = this.route.snapshot.queryParamMap.get('email') ?? '';
-    this.email.set(email);
-    if (!email) {
-      this.errorMessage.set('Enter your email on the forgot password page first.');
-    } else {
-      this.infoMessage.set(`Enter the 6-digit code sent to ${email}.`);
+    const token = this.route.snapshot.queryParamMap.get('token') ?? '';
+    this.token.set(token);
+
+    if (!token) {
+      this.isValidating.set(false);
+      this.errorMessage.set('This reset link is invalid or has expired.');
+      return;
     }
+
+    this.authService.validateResetToken(token).subscribe({
+      next: () => {
+        this.isValidating.set(false);
+        this.tokenValid.set(true);
+      },
+      error: () => {
+        this.isValidating.set(false);
+        this.errorMessage.set('This reset link is invalid or has expired.');
+      }
+    });
   }
 
   protected onSubmit(): void {
-    if (this.form.invalid || !this.email()) {
+    if (this.form.invalid || !this.token()) {
       this.form.markAllAsTouched();
       return;
     }
@@ -51,9 +61,9 @@ export class ResetPasswordComponent implements OnInit {
     this.isSubmitting.set(true);
     this.errorMessage.set(null);
 
-    const { code, newPassword } = this.form.getRawValue();
+    const { newPassword } = this.form.getRawValue();
 
-    this.authService.resetPassword(this.email(), code, newPassword).subscribe({
+    this.authService.resetPassword(this.token(), newPassword).subscribe({
       next: () => {
         this.isSubmitting.set(false);
         this.router.navigate(['/login'], { queryParams: { reset: 'true' } });
@@ -61,24 +71,6 @@ export class ResetPasswordComponent implements OnInit {
       error: (err) => {
         this.isSubmitting.set(false);
         this.errorMessage.set(err.error?.message ?? 'Failed to reset password.');
-      }
-    });
-  }
-
-  protected resendCode(): void {
-    if (!this.email()) return;
-
-    this.isResending.set(true);
-    this.errorMessage.set(null);
-
-    this.authService.forgotPassword(this.email()).subscribe({
-      next: () => {
-        this.isResending.set(false);
-        this.infoMessage.set('A new verification code has been sent.');
-      },
-      error: () => {
-        this.isResending.set(false);
-        this.errorMessage.set('Unable to resend code.');
       }
     });
   }

@@ -9,6 +9,7 @@ interface DemoAppointment {
   id: string;
   startUtc: string;
   serviceName: string;
+  customerName?: string;
   status: 'Pending' | 'Confirmed';
 }
 
@@ -19,6 +20,8 @@ interface DemoAppointment {
   styleUrl: './home.scss'
 })
 export class HomeComponent {
+  protected readonly newBookingIds = signal<Set<string>>(new Set());
+
   protected readonly todayAppointments = signal<DemoAppointment[]>([
     {
       id: 'demo-static-1',
@@ -32,14 +35,32 @@ export class HomeComponent {
 
   protected onDemoBooked(result: DemoBookingResult): void {
     this.todayAppointments.update((items) => [
-      ...items,
       {
         id: result.id,
         startUtc: result.startUtc,
         serviceName: result.serviceName,
+        customerName: result.customerName,
         status: result.status
-      }
+      },
+      ...items
     ]);
+
+    this.newBookingIds.update((ids) => new Set(ids).add(result.id));
+    window.setTimeout(() => {
+      this.newBookingIds.update((ids) => {
+        const next = new Set(ids);
+        next.delete(result.id);
+        return next;
+      });
+    }, 2400);
+  }
+
+  protected isNewBooking(id: string): boolean {
+    return this.newBookingIds().has(id);
+  }
+
+  protected pendingCount(): number {
+    return this.todayAppointments().filter((a) => a.status === 'Pending').length;
   }
 
   protected formatTime(iso: string): string {

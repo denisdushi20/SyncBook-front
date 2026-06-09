@@ -1,147 +1,166 @@
+@use '../../dashboard/styles/dashboard-page';
+
 .staff-management {
+  @include dashboard-page.dashboard-page;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.staff-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.2fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.staff-layout__roster,
+.staff-layout__editor {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
-.profile-header {
-  h1 {
-    margin: 0 0 0.5rem;
-    color: #1e293b;
-  }
+.roster-hint {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
 
-  p {
-    margin: 0;
-    color: #64748b;
+.staff-roster {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.staff-roster__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &--selected {
+    border-color: var(--color-emerald, #0f766e);
+    box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.12);
   }
 }
 
-.loading {
+.staff-roster__select {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+
+  &:hover {
+    background: #f8fafc;
+  }
+}
+
+.staff-roster__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+
+  strong {
+    color: var(--color-slate, #1e293b);
+    font-size: 0.95rem;
+  }
+}
+
+.staff-roster__hours {
+  font-size: 0.8rem;
   color: #64748b;
 }
 
-.message {
+.staff-roster__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: flex-end;
+}
+
+.staff-roster__remove {
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.form-hint {
   margin: 0;
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
-
-  &--error {
-    background: #fef2f2;
-    color: #b91c1c;
-  }
-
-  &--success {
-    background: #ecfdf5;
-    color: #065f46;
-  }
-}
-
-.profile-section {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 1.5rem;
-
-  h2 {
-    margin: 1.5rem 0 1rem;
-    font-size: 1.1rem;
-    color: #1e293b;
-  }
-}
-
-.staff-name {
-  margin: 0 0 1rem;
-  font-size: 0.9rem;
-  color: #475569;
+  font-size: 0.8125rem;
+  color: #64748b;
+  line-height: 1.45;
 }
 
 .bookable-toggle {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin: 1rem 0 0.25rem;
   font-size: 0.9rem;
   font-weight: 500;
   color: #334155;
-}
-
-.hint {
-  margin: 0.5rem 0 0;
-  font-size: 0.8rem;
-  color: #94a3b8;
-}
-
-.hours-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.hours-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.day-label {
-  min-width: 100px;
-  font-weight: 500;
-  color: #334155;
-  font-size: 0.875rem;
+  cursor: pointer;
 }
 
 .open-toggle {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  font-size: 0.875rem;
-  color: #64748b;
-}
-
-.time-input {
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
-  padding: 0.35rem 0.5rem;
-  font-size: 0.875rem;
-}
-
-.time-sep {
-  font-size: 0.875rem;
-  color: #94a3b8;
-}
-
-.closed-label {
-  font-size: 0.875rem;
-  color: #94a3b8;
-  font-style: italic;
-}
-
-.action-btn {
-  border: none;
-  background: #0f766e;
-  color: #fff;
-  padding: 0.6rem 1.25rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.8125rem;
+  color: #475569;
   cursor: pointer;
+}
 
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+@media (max-width: 900px) {
+  .staff-layout {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 640px) {
-  .staff-management {
-    gap: 1.25rem;
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .profile-section {
-    padding: 1rem;
+  .staff-roster__select {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .staff-roster__badges {
+    justify-content: flex-start;
   }
 }

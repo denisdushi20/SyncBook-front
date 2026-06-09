@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -12,10 +12,10 @@ import { AuthService } from '../../../core/services/auth.service';
 export class ForgotPasswordComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
 
   protected readonly isSubmitting = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+  protected readonly successMessage = signal<string | null>(null);
 
   protected readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]]
@@ -35,7 +35,7 @@ export class ForgotPasswordComponent {
     this.authService.forgotPassword(email).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        this.router.navigate(['/reset-password'], { queryParams: { email } });
+        this.successMessage.set(`We've sent a reset link to ${email}. Check your inbox.`);
       },
       error: () => {
         this.isSubmitting.set(false);

@@ -17,6 +17,24 @@
         class="sidebar-link"
       >
         Calendar
+        @if ((bookingAlertsHub.newBookingCount$ | async) ?? 0; as count) {
+          @if (count > 0) {
+            <span class="sidebar-badge">{{ count }}</span>
+          }
+        }
+      </a>
+      <a
+        routerLink="/dashboard/analytics"
+        routerLinkActive="sidebar-link--active"
+        class="sidebar-link"
+      >
+        <svg class="sidebar-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M3 13h2v8H3v-8zm4-6h2v14H7V7zm4 4h2v10h-2V11zm4-6h2v16h-2V5zm4 10h2v6h-2v-6z"
+            fill="currentColor"
+          />
+        </svg>
+        Insights &amp; Revenue
       </a>
       <a
         routerLink="/dashboard/profile"
@@ -30,7 +48,7 @@
         routerLinkActive="sidebar-link--active"
         class="sidebar-link"
       >
-        Staff
+        Team
       </a>
       <a
         routerLink="/dashboard/settings"

@@ -1,12 +1,16 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
 import {
   Appointment,
   CreateInternalAppointmentPayload,
   InternalAppointmentSlot
 } from '../../../core/models/business.models';
 import { wallClockSortKey } from '../../../core/utils/appointment-time';
+
+export interface LoadAppointmentsOptions {
+  forceRefresh?: boolean;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AppointmentService {
@@ -15,11 +19,32 @@ export class AppointmentService {
   private readonly loadingSubject = new BehaviorSubject<boolean>(false);
   private readonly errorSubject = new BehaviorSubject<string | null>(null);
 
+  private lastLoadedRange: { from: Date; to: Date } | null = null;
+
   readonly appointments$ = this.appointmentsSubject.asObservable();
   readonly loading$ = this.loadingSubject.asObservable();
   readonly error$ = this.errorSubject.asObservable();
 
-  loadForRange(from: Date, to: Date): Observable<Appointment[]> {
+  loadForRange(from: Date, to: Date, options?: LoadAppointmentsOptions): Observable<Appointment[]> {
+    return this.loadAppointments(from, to, options);
+  }
+
+  loadAppointments(
+    from: Date,
+    to: Date,
+    options?: LoadAppointmentsOptions
+  ): Observable<Appointment[]> {
+    const forceRefresh = options?.forceRefresh ?? false;
+    const sameRange =
+      this.lastLoadedRange &&
+      this.lastLoadedRange.from.getTime() === from.getTime() &&
+      this.lastLoadedRange.to.getTime() === to.getTime();
+
+    if (!forceRefresh && sameRange) {
+      this.loadingSubject.next(false);
+      return of(this.appointmentsSubject.value);
+    }
+
     this.loadingSubject.next(true);
     this.errorSubject.next(null);
 
@@ -33,6 +58,7 @@ export class AppointmentService {
         map((items) => items.map((item) => this.normalizeAppointment(item))),
         tap({
           next: (appointments) => {
+            this.lastLoadedRange = { from, to };
             this.appointmentsSubject.next(appointments);
             this.loadingSubject.next(false);
           },
@@ -75,10 +101,23 @@ export class AppointmentService {
   }
 
   confirmAppointment(id: string): Observable<Appointment> {
+    return this.updateAppointmentStatus(id, 'Confirmed');
+  }
+
+  rejectAppointment(id: string): Observable<Appointment> {
+    return this.updateAppointmentStatus(id, 'Cancelled');
+  }
+
+  markAsPaid(id: string): Observable<Appointment> {
+    return this.updateAppointmentStatus(id, 'Completed');
+  }
+
+  private updateAppointmentStatus(
+    id: string,
+    status: Appointment['status']
+  ): Observable<Appointment> {
     return this.http
-      .patch<Record<string, unknown>>(`/api/businesses/me/appointments/${id}/status`, {
-        status: 'Confirmed'
-      })
+      .patch<Record<string, unknown>>(`/api/businesses/me/appointments/${id}/status`, { status })
       .pipe(
         map((item) => this.normalizeAppointment(item)),
         tap((appointment) => this.updateAppointment(appointment))
@@ -111,6 +150,10 @@ export class AppointmentService {
         ? String(raw['serviceId'] ?? raw['ServiceId'])
         : undefined,
       serviceName: String(raw['serviceName'] ?? raw['ServiceName'] ?? ''),
+      servicePrice:
+        raw['servicePrice'] != null || raw['ServicePrice'] != null
+          ? Number(raw['servicePrice'] ?? raw['ServicePrice'])
+          : undefined,
       startUtc: String(raw['startUtc'] ?? raw['StartUtc'] ?? ''),
       endUtc: String(raw['endUtc'] ?? raw['EndUtc'] ?? ''),
       bufferMinutes: raw['bufferMinutes'] != null || raw['BufferMinutes'] != null

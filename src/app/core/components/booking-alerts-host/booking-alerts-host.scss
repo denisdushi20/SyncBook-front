@@ -1,0 +1,232 @@
+.booking-alert-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(6, 24, 20, 0.72);
+  backdrop-filter: blur(6px);
+  animation: overlayIn 0.25s ease-out;
+}
+
+.booking-alert-circle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(92vw, 28rem);
+  aspect-ratio: 1;
+  max-height: min(92vw, 28rem);
+}
+
+.booking-alert-circle__pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(16, 185, 129, 0.55);
+  animation: pulseRing 2s ease-out infinite;
+}
+
+.booking-alert-circle__pulse--delayed {
+  animation-delay: 1s;
+}
+
+.booking-alert-circle__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 88%;
+  height: 88%;
+  padding: 2rem 1.75rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ecfdf5 0%, #d1fae5 45%, #a7f3d0 100%);
+  border: 4px solid #10b981;
+  box-shadow:
+    0 0 0 8px rgba(16, 185, 129, 0.15),
+    0 24px 64px rgba(5, 150, 105, 0.35);
+  text-align: center;
+  animation: circlePop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.booking-alert-circle__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 0.75rem;
+  border-radius: 50%;
+  background: #10b981;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45);
+  animation: badgeBounce 0.6s ease-out 0.2s both;
+}
+
+.booking-alert-circle__title {
+  margin: 0;
+  font-size: clamp(1.1rem, 4vw, 1.45rem);
+  font-weight: 800;
+  line-height: 1.25;
+  color: #064e3b;
+  letter-spacing: -0.02em;
+}
+
+.booking-alert-circle__detail {
+  margin: 0.85rem 0 1.35rem;
+  font-size: clamp(0.8rem, 2.8vw, 0.95rem);
+  line-height: 1.45;
+  color: #047857;
+}
+
+.booking-alert-circle__time {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.82rem;
+  color: #065f46;
+  opacity: 0.85;
+}
+
+.booking-alert-circle__error {
+  margin: 0 0 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  font-size: 0.8rem;
+  max-width: 100%;
+}
+
+.booking-alert-circle__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.booking-alert-circle__confirm,
+.booking-alert-circle__reject {
+  min-width: 6.5rem;
+  padding: 0.7rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.booking-alert-circle__confirm {
+  border: none;
+  background: #059669;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+
+  &:hover:not(:disabled) {
+    background: #047857;
+    transform: scale(1.03);
+  }
+}
+
+.booking-alert-circle__reject {
+  border: 2px solid #f87171;
+  background: #fff;
+  color: #dc2626;
+
+  &:hover:not(:disabled) {
+    background: #fef2f2;
+    transform: scale(1.03);
+  }
+}
+
+.booking-alert-circle__calendar {
+  display: inline-block;
+  margin-top: 0.85rem;
+  color: #047857;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.booking-alert-circle__dismiss {
+  margin-top: 0.75rem;
+  padding: 0.35rem 0.75rem;
+  border: none;
+  background: transparent;
+  color: #047857;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  opacity: 0.75;
+
+  &:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+}
+
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes circlePop {
+  from {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes badgeBounce {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+
+  60% {
+    transform: scale(1.15);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1.18);
+    opacity: 0;
+  }
+}

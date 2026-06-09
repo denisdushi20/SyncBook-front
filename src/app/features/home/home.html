@@ -225,13 +225,27 @@
         </div>
       </div>
 
+      <p class="demo-hint">
+        <span class="demo-hint-icon" aria-hidden="true">↗</span>
+        Try it — book a slot on the left and watch the dashboard update instantly.
+      </p>
+
       <div class="booking-showcase">
         <div class="mock-panel mock-panel--customer">
           <div class="mock-header">
-            <span class="mock-dot mock-dot--red"></span>
-            <span class="mock-dot mock-dot--yellow"></span>
-            <span class="mock-dot mock-dot--green"></span>
+            <div class="mock-chrome">
+              <span class="mock-dot mock-dot--red"></span>
+              <span class="mock-dot mock-dot--yellow"></span>
+              <span class="mock-dot mock-dot--green"></span>
+            </div>
+            <span class="mock-role-badge mock-role-badge--customer">Customer</span>
             <span class="mock-title">Book an appointment</span>
+          </div>
+          <div class="mock-url-bar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            syncbook.app/book/glow-studio
           </div>
           <div class="mock-body">
             <app-demo-booking-panel (booked)="onDemoBooked($event)" />
@@ -239,42 +253,92 @@
         </div>
 
         <div class="sync-bridge" aria-hidden="true">
-          <div class="sync-bridge-line">
-            <div class="sync-bridge-pulse"></div>
+          <div class="sync-bridge-hub">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
           </div>
-          <span class="sync-bridge-label">WebSocket</span>
+          <div class="sync-bridge-track">
+            <div class="sync-bridge-packet sync-bridge-packet--a"></div>
+            <div class="sync-bridge-packet sync-bridge-packet--b"></div>
+          </div>
+          <span class="sync-bridge-label">SignalR</span>
+          <span class="sync-bridge-sublabel">WebSocket</span>
         </div>
 
         <div class="mock-panel mock-panel--owner">
           <div class="mock-header">
-            <span class="mock-dot mock-dot--red"></span>
-            <span class="mock-dot mock-dot--yellow"></span>
-            <span class="mock-dot mock-dot--green"></span>
+            <div class="mock-chrome">
+              <span class="mock-dot mock-dot--red"></span>
+              <span class="mock-dot mock-dot--yellow"></span>
+              <span class="mock-dot mock-dot--green"></span>
+            </div>
+            <span class="mock-role-badge mock-role-badge--owner">Owner</span>
             <span class="mock-title">Live Dashboard</span>
             <span class="live-badge">
               <span class="live-dot"></span>
               LIVE
             </span>
           </div>
-          <div class="mock-body">
-            <p class="mock-label">Today's bookings</p>
-            @if (todayAppointments().length === 0) {
-              <p class="mock-empty">No bookings yet today.</p>
-            } @else {
-              @for (appt of todayAppointments(); track appt.id) {
-                <div
-                  class="mock-booking-row"
-                  [class.mock-booking-row--static]="appt.status === 'Confirmed'"
-                  [class.mock-booking-row--live]="appt.status === 'Pending'"
-                >
-                  <span class="mock-time">{{ formatTime(appt.startUtc) }}</span>
-                  <span class="mock-service">{{ appt.serviceName }}</span>
-                  <span class="mock-status" [class]="statusClass(appt.status)">
-                    {{ appt.status === 'Pending' ? 'Just booked' : appt.status }}
-                  </span>
+          <div class="mock-url-bar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            syncbook.app/dashboard
+          </div>
+          <div class="mock-body mock-body--dashboard">
+            <div class="dashboard-stats">
+              <div class="dashboard-stat">
+                <span class="dashboard-stat-value">{{ todayAppointments().length }}</span>
+                <span class="dashboard-stat-label">Today</span>
+              </div>
+              <div class="dashboard-stat dashboard-stat--highlight">
+                <span class="dashboard-stat-value">{{ pendingCount() }}</span>
+                <span class="dashboard-stat-label">New</span>
+              </div>
+            </div>
+
+            <p class="dashboard-section-label">Today's bookings</p>
+            <div class="mock-booking-list">
+              @if (todayAppointments().length === 0) {
+                <div class="mock-empty-state">
+                  <div class="mock-empty-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <rect x="3" y="4" width="18" height="18" rx="2" />
+                      <path d="M16 2v4M8 2v4M3 10h18" />
+                    </svg>
+                  </div>
+                  <p class="mock-empty-title">Waiting for bookings</p>
+                  <p class="mock-empty">Book a slot on the left to see live sync.</p>
                 </div>
+              } @else {
+                @for (appt of todayAppointments(); track appt.id) {
+                  <div
+                    class="mock-booking-row"
+                    [class.mock-booking-row--static]="appt.status === 'Confirmed'"
+                    [class.mock-booking-row--live]="appt.status === 'Pending'"
+                    [class.mock-booking-row--enter]="isNewBooking(appt.id)"
+                  >
+                    <div class="mock-booking-avatar" aria-hidden="true">
+                      {{ (appt.customerName || appt.serviceName).charAt(0).toUpperCase() }}
+                    </div>
+                    <div class="mock-booking-info">
+                      <span class="mock-booking-name">
+                        {{ appt.customerName || 'Walk-in customer' }}
+                      </span>
+                      <span class="mock-service">{{ appt.serviceName }}</span>
+                    </div>
+                    <div class="mock-booking-meta">
+                      <span class="mock-time">{{ formatTime(appt.startUtc) }}</span>
+                      <span class="mock-status" [class]="statusClass(appt.status)">
+                        {{ appt.status === 'Pending' ? 'Just booked' : appt.status }}
+                      </span>
+                    </div>
+                  </div>
+                }
               }
-            }
+            </div>
           </div>
         </div>
       </div>

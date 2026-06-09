@@ -101,6 +101,22 @@
     background: #f1f5f9;
     color: #64748b;
   }
+
+  &--completed {
+    background: #d1fae5;
+    color: #047857;
+  }
+}
+
+.service-price-tag {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .details-actions {
@@ -110,7 +126,8 @@
 }
 
 .btn-primary,
-.btn-secondary {
+.btn-secondary,
+.btn-danger {
   border-radius: 8px;
   padding: 0.6rem 1.25rem;
   font-size: 0.9375rem;
@@ -120,12 +137,32 @@
 
 .btn-primary {
   border: none;
-  background: #0f766e;
+  background: var(--color-emerald, #0f766e);
   color: #fff;
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+
+  &--paid {
+    background: var(--color-emerald, #10b981);
+    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.35);
+  }
+}
+
+.btn-danger {
+  border: 1px solid #fca5a5;
+  background: #fff;
+  color: #dc2626;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    background: #fef2f2;
   }
 }
 

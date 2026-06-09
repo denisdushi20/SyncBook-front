@@ -1,82 +1,14 @@
+@use '../dashboard/styles/dashboard-page';
+
 .business-profile {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  @include dashboard-page.dashboard-page;
 }
 
-.profile-header {
-  h1 {
-    margin: 0 0 0.5rem;
-    color: #1e293b;
-  }
-
-  p {
-    margin: 0;
-    color: #64748b;
-  }
-}
-
-.loading {
+.catalog-hint {
+  margin: -0.5rem 0 1rem;
+  font-size: 0.85rem;
   color: #64748b;
-}
-
-.message {
-  margin: 0;
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
-
-  &--error {
-    background: #fef2f2;
-    color: #b91c1c;
-  }
-
-  &--success {
-    background: #ecfdf5;
-    color: #065f46;
-  }
-}
-
-.profile-section {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 1.5rem;
-
-  h2 {
-    margin: 0 0 1rem;
-    font-size: 1.1rem;
-    color: #1e293b;
-  }
-
-  h3 {
-    margin: 0 0 0.75rem;
-    font-size: 0.95rem;
-    color: #334155;
-  }
-}
-
-.hours-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.hours-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.day-label {
-  min-width: 100px;
-  font-weight: 500;
-  color: #334155;
-  font-size: 0.875rem;
+  line-height: 1.4;
 }
 
 .open-toggle {
@@ -85,50 +17,6 @@
   gap: 0.35rem;
   font-size: 0.875rem;
   color: #64748b;
-}
-
-.time-input {
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
-  padding: 0.35rem 0.5rem;
-  font-size: 0.875rem;
-}
-
-.time-sep {
-  font-size: 0.875rem;
-  color: #94a3b8;
-}
-
-.closed-label {
-  font-size: 0.875rem;
-  color: #94a3b8;
-  font-style: italic;
-}
-
-.action-btn {
-  border: none;
-  background: #0f766e;
-  color: #fff;
-  padding: 0.6rem 1.25rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
-.secondary-btn {
-  border: 1px solid #cbd5e1;
-  background: #fff;
-  color: #475569;
-  padding: 0.6rem 1.25rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  cursor: pointer;
 }
 
 .service-list {
@@ -164,24 +52,16 @@
   span {
     color: #64748b;
   }
+
+  .service-price {
+    color: #059669;
+    font-weight: 600;
+  }
 }
 
 .service-actions {
   display: flex;
   gap: 0.75rem;
-}
-
-.link-btn {
-  border: none;
-  background: none;
-  color: #0f766e;
-  font-size: 0.875rem;
-  cursor: pointer;
-  padding: 0;
-
-  &--danger {
-    color: #b91c1c;
-  }
 }
 
 .service-form {
@@ -231,7 +111,7 @@
     gap: 1.25rem;
   }
 
-  .profile-section {
+  .dashboard-card {
     padding: 1rem;
   }
 

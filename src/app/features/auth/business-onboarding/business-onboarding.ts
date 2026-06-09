@@ -177,7 +177,7 @@ export class BusinessOnboardingComponent implements OnInit {
     category: string;
     description: string;
     image: string;
-    services: { name: string; durationMinutes: string }[];
+    services: { name: string; durationMinutes: string; price: string }[];
     workingHours: { day: string; isOpen: boolean; openTime: string; closeTime: string }[];
   }): void {
     const { name, email, phone, category, description, image, services, workingHours } = businessData;
@@ -194,7 +194,8 @@ export class BusinessOnboardingComponent implements OnInit {
           .filter((s) => s.name.trim())
           .map((s) => ({
             name: s.name.trim(),
-            durationMinutes: s.durationMinutes ? Number(s.durationMinutes) : undefined
+            durationMinutes: s.durationMinutes ? Number(s.durationMinutes) : undefined,
+            price: s.price ? Number(s.price) : undefined
           })),
         workingHours: workingHours.map((d) => ({
           day: d.day,
@@ -225,7 +226,7 @@ export class BusinessOnboardingComponent implements OnInit {
       category: string;
       description: string;
       image: string;
-      services: { name: string; durationMinutes: string }[];
+      services: { name: string; durationMinutes: string; price: string }[];
       workingHours: { day: string; isOpen: boolean; openTime: string; closeTime: string }[];
     }
   ): void {
@@ -248,7 +249,8 @@ export class BusinessOnboardingComponent implements OnInit {
             .filter((s) => s.name.trim())
             .map((s) => ({
               name: s.name.trim(),
-              durationMinutes: s.durationMinutes ? Number(s.durationMinutes) : undefined
+              durationMinutes: s.durationMinutes ? Number(s.durationMinutes) : undefined,
+              price: s.price ? Number(s.price) : undefined
             })),
           workingHours: workingHours.map((d) => ({
             day: d.day,
@@ -298,7 +300,8 @@ export class BusinessOnboardingComponent implements OnInit {
   private createServiceGroup() {
     return this.fb.nonNullable.group({
       name: ['', Validators.required],
-      durationMinutes: ['']
+      durationMinutes: [''],
+      price: ['']
     });
   }
 

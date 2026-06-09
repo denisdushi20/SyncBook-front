@@ -8,6 +8,7 @@ import {
   BusinessServiceItem,
   InternalAppointmentSlot
 } from '../../../../core/models/business.models';
+import { PublicBookingAvailabilityHubService } from '../../../../core/services/public-booking-availability-hub.service';
 import { PublicBookingService } from '../../../../core/services/public-booking.service';
 
 @Component({
@@ -19,6 +20,7 @@ import { PublicBookingService } from '../../../../core/services/public-booking.s
 export class PublicBookingPanelComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly publicBookingService = inject(PublicBookingService);
+  private readonly availabilityHub = inject(PublicBookingAvailabilityHubService);
 
   readonly businessId = input<string | null>(null);
   readonly showBusinessSelector = input(false);
@@ -60,6 +62,17 @@ export class PublicBookingPanelComponent implements OnInit {
         takeUntilDestroyed()
       )
       .subscribe();
+
+    this.availabilityHub.availabilityChanged$
+      .pipe(takeUntilDestroyed())
+      .subscribe((event) => {
+        const activeBusinessId = this.form.controls.businessId.value;
+        if (!activeBusinessId || event.businessId !== activeBusinessId) {
+          return;
+        }
+
+        this.fetchSlots().subscribe();
+      });
   }
 
   ngOnInit(): void {
@@ -67,6 +80,7 @@ export class PublicBookingPanelComponent implements OnInit {
     if (fixedBusinessId) {
       this.form.patchValue({ businessId: fixedBusinessId });
       this.loadBusiness(fixedBusinessId);
+      void this.availabilityHub.joinBusiness(fixedBusinessId);
     } else if (this.showBusinessSelector()) {
       this.publicBookingService.getBusinesses().subscribe({
         next: (items) => {
@@ -87,6 +101,9 @@ export class PublicBookingPanelComponent implements OnInit {
     this.form.controls.businessId.valueChanges.pipe(takeUntilDestroyed()).subscribe((id) => {
       if (id) {
         this.loadBusiness(id);
+        void this.availabilityHub.joinBusiness(id);
+      } else {
+        void this.availabilityHub.leaveBusiness();
       }
     });
   }

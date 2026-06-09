@@ -17,6 +17,8 @@ export interface AuthUser {
 }
 
 export interface UserProfile extends AuthUser {
+  firstName: string;
+  lastName: string;
   authProvider: AuthProvider;
 }
 
@@ -173,6 +175,12 @@ export class AuthService {
     return this.http.get<UserProfile>('/api/auth/me');
   }
 
+  updateProfile(firstName: string, lastName: string): Observable<AuthResponse> {
+    return this.http.put<AuthResponse>('/api/auth/me', { firstName, lastName }).pipe(
+      tap((response) => this.persistSession(response))
+    );
+  }
+
   changePassword(newPassword: string, currentPassword?: string): Observable<void> {
     const body = currentPassword
       ? { currentPassword, newPassword }
@@ -184,8 +192,14 @@ export class AuthService {
     return this.http.post<MessageResponse>('/api/auth/forgot-password', { email });
   }
 
-  resetPassword(email: string, code: string, newPassword: string): Observable<MessageResponse> {
-    return this.http.post<MessageResponse>('/api/auth/reset-password', { email, code, newPassword });
+  validateResetToken(token: string): Observable<{ valid: boolean }> {
+    return this.http.get<{ valid: boolean }>('/api/auth/validate-reset-token', {
+      params: { token }
+    });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<MessageResponse> {
+    return this.http.post<MessageResponse>('/api/auth/reset-password', { token, newPassword });
   }
 
   logout(): void {

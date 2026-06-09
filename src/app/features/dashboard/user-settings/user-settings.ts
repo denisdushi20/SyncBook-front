@@ -16,9 +16,17 @@ export class UserSettingsComponent implements OnInit {
   protected readonly profile = signal<UserProfile | null>(null);
   protected readonly isLoading = signal(true);
   protected readonly loadError = signal<string | null>(null);
+  protected readonly profileMessage = signal<string | null>(null);
+  protected readonly profileError = signal<string | null>(null);
+  protected readonly isSavingProfile = signal(false);
   protected readonly passwordMessage = signal<string | null>(null);
   protected readonly passwordError = signal<string | null>(null);
   protected readonly isSavingPassword = signal(false);
+
+  protected readonly profileForm = this.fb.nonNullable.group({
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required]
+  });
 
   protected readonly passwordForm = this.fb.nonNullable.group(
     {
@@ -33,6 +41,10 @@ export class UserSettingsComponent implements OnInit {
     this.authService.getCurrentUserProfile().subscribe({
       next: (profile) => {
         this.profile.set(profile);
+        this.profileForm.patchValue({
+          firstName: profile.firstName,
+          lastName: profile.lastName
+        });
         this.configurePasswordForm(profile.authProvider);
         this.isLoading.set(false);
       },
@@ -63,6 +75,42 @@ export class UserSettingsComponent implements OnInit {
 
   protected providerLabel(provider: AuthProvider | undefined): string {
     return provider === 'Google' ? 'Google' : 'Email & password';
+  }
+
+  protected onSaveProfile(): void {
+    if (this.profileForm.invalid) {
+      this.profileForm.markAllAsTouched();
+      return;
+    }
+
+    const { firstName, lastName } = this.profileForm.getRawValue();
+    this.isSavingProfile.set(true);
+    this.profileMessage.set(null);
+    this.profileError.set(null);
+
+    this.authService.updateProfile(firstName, lastName).subscribe({
+      next: () => {
+        this.authService.getCurrentUserProfile().subscribe({
+          next: (profile) => {
+            this.profile.set(profile);
+            this.profileForm.patchValue({
+              firstName: profile.firstName,
+              lastName: profile.lastName
+            });
+            this.isSavingProfile.set(false);
+            this.profileMessage.set('Profile updated successfully.');
+          },
+          error: () => {
+            this.isSavingProfile.set(false);
+            this.profileMessage.set('Profile updated successfully.');
+          }
+        });
+      },
+      error: (err) => {
+        this.isSavingProfile.set(false);
+        this.profileError.set(err.error?.message ?? 'Failed to update profile.');
+      }
+    });
   }
 
   protected onChangePassword(): void {

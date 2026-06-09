@@ -1,20 +1,20 @@
 <section class="business-profile">
-  <header class="profile-header">
+  <header class="dashboard-page-header">
     <h1>Business Profile</h1>
     <p>Manage your opening hours and service catalog.</p>
   </header>
 
   @if (errorMessage()) {
-    <p class="message message--error">{{ errorMessage() }}</p>
+    <p class="dashboard-message dashboard-message--error">{{ errorMessage() }}</p>
   }
   @if (successMessage()) {
-    <p class="message message--success">{{ successMessage() }}</p>
+    <p class="dashboard-message dashboard-message--success">{{ successMessage() }}</p>
   }
 
   @if (isLoading()) {
-    <p class="loading">Loading business profile…</p>
+    <p class="dashboard-loading">Loading business profile…</p>
   } @else {
-    <form [formGroup]="hoursForm" (ngSubmit)="saveWorkingHours()" class="profile-section">
+    <form [formGroup]="hoursForm" (ngSubmit)="saveWorkingHours()" class="dashboard-card">
       <h2>Opening Hours</h2>
 
       <div formArrayName="workingHours" class="hours-list">
@@ -41,8 +41,9 @@
       </button>
     </form>
 
-    <section class="profile-section">
+    <section class="dashboard-card">
       <h2>Services Catalog</h2>
+      <p class="catalog-hint">Each service price is used for revenue tracking when you mark appointments as paid.</p>
 
       <ul class="service-list">
         @for (service of services(); track service.id) {
@@ -51,6 +52,9 @@
               <strong>{{ service.name }}</strong>
               @if (service.durationMinutes) {
                 <span>{{ service.durationMinutes }} min</span>
+              }
+              @if (service.price != null) {
+                <span class="service-price">${{ service.price }}</span>
               }
             </div>
             <div class="service-actions">
@@ -73,6 +77,10 @@
           <div class="field field--short">
             <label for="serviceDuration">Duration (min)</label>
             <input id="serviceDuration" type="number" formControlName="durationMinutes" min="1" />
+          </div>
+          <div class="field field--short">
+            <label for="servicePrice">Price ($)</label>
+            <input id="servicePrice" type="number" formControlName="price" min="0" step="0.01" />
           </div>
         </div>
         <div class="service-form-actions">

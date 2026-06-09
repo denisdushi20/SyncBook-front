@@ -3,5 +3,17 @@
     "target": "http://localhost:5266",
     "secure": false,
     "changeOrigin": true
+  },
+  "/notification-hub": {
+    "target": "http://localhost:5266",
+    "secure": false,
+    "changeOrigin": true,
+    "ws": true
+  },
+  "/public-booking-availability-hub": {
+    "target": "http://localhost:5266",
+    "secure": false,
+    "changeOrigin": true,
+    "ws": true
   }
 }

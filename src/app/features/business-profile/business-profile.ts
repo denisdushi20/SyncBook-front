@@ -35,7 +35,8 @@ export class BusinessProfileComponent implements OnInit {
 
   protected readonly serviceForm = this.fb.nonNullable.group({
     name: ['', Validators.required],
-    durationMinutes: [null as number | null]
+    durationMinutes: [null as number | null],
+    price: [null as number | null]
   });
 
   ngOnInit(): void {
@@ -95,14 +96,15 @@ export class BusinessProfileComponent implements OnInit {
     this.editingServiceId.set(service.id ?? null);
     this.serviceForm.setValue({
       name: service.name,
-      durationMinutes: service.durationMinutes ?? null
+      durationMinutes: service.durationMinutes ?? null,
+      price: service.price ?? null
     });
     this.clearMessages();
   }
 
   protected cancelEditService(): void {
     this.editingServiceId.set(null);
-    this.serviceForm.reset({ name: '', durationMinutes: null });
+    this.serviceForm.reset({ name: '', durationMinutes: null, price: null });
   }
 
   protected saveService(): void {
@@ -111,10 +113,11 @@ export class BusinessProfileComponent implements OnInit {
       return;
     }
 
-    const { name, durationMinutes } = this.serviceForm.getRawValue();
+    const { name, durationMinutes, price } = this.serviceForm.getRawValue();
     const payload = {
       name,
-      durationMinutes: durationMinutes ?? undefined
+      durationMinutes: durationMinutes ?? undefined,
+      price: price ?? undefined
     };
 
     this.isSavingService.set(true);
@@ -130,7 +133,7 @@ export class BusinessProfileComponent implements OnInit {
         this.services.set(business.services);
         this.isSavingService.set(false);
         this.editingServiceId.set(null);
-        this.serviceForm.reset({ name: '', durationMinutes: null });
+        this.serviceForm.reset({ name: '', durationMinutes: null, price: null });
         this.successMessage.set(editingId ? 'Service updated.' : 'Service added.');
       },
       error: (err) => {
